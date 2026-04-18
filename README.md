@@ -65,7 +65,7 @@ git pull
 
 ## Скиллы в Claude Desktop
 
-Claude Desktop не читает `~/.claude/skills/` (это канал Claude Code CLI), а принимает скиллы только через Upload в Settings. Одной командой:
+Claude Desktop не читает `~/.claude/skills/` (это канал Claude Code CLI). Нативного watched-folder у него тоже нет — скиллы добавляются только через Upload в Settings. Но после первой загрузки Desktop разворачивает скилл в открытую папку в `Library/Application Support/Claude/...`, куда можно класть обновления напрямую. На этом построена схема `deploy-skills.sh`:
 
 ```bash
 ./scripts/deploy-skills.sh
@@ -73,10 +73,15 @@ Claude Desktop не читает `~/.claude/skills/` (это канал Claude C
 
 Скрипт:
 - прогоняет `install.sh` (Claude Code + Codex + Gemini + Cursor);
-- пакует каждый скилл в zip в `dist/claude-desktop-skills/`;
-- открывает Finder с zip'ами.
+- пакует каждый скилл в zip в `dist/claude-desktop-skills/` — для **первой** загрузки через UI;
+- для скиллов, которые **уже** загружены, делает rsync из репы прямо в папку Desktop (щадящий режим, без `--delete` — ничего чужого не удаляется).
 
-Дальше в Claude Desktop: Settings → Capabilities → Skills → Upload, перетащи все zip'ы. Watched-folder у Desktop нет, Anthropic заставляет грузить руками — поэтому полной автоматизации быть не может.
+Порядок работы:
+
+1. Первый раз — Settings → Capabilities → Skills → Upload, перетащи zip'ы из открывшейся папки, включи тумблеры.
+2. Дальше — просто `./scripts/deploy-skills.sh` после правок в репе, перезапусти Desktop, обновления подхватываются.
+
+Если в репе появляется новый скилл, которого ещё нет в Desktop, — скрипт подсветит его в списке «требует первой загрузки».
 
 ## Документация
 
