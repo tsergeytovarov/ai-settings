@@ -1,0 +1,24 @@
+{
+  "name": "tg-post-writer-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CLI tool to render Meridian-style TG cover images",
+  "type": "module",
+  "scripts": {
+    "render": "tsx render-cover.ts",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "satori": "^0.10.13",
+    "@resvg/resvg-js": "^2.6.2"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
