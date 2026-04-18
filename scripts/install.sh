@@ -56,15 +56,17 @@ else
 fi
 
 # --- Codex CLI ---
+# Codex не резолвит @imports в AGENTS.md, поэтому кладём плоскую версию с
+# развёрнутыми импортами. Не симлинк, а обычный файл — иначе Codex будет
+# видеть только верхний уровень, не модули из docs/ai/.
 log_info "Setting up Codex CLI..."
 if [[ $DRY_RUN -eq 0 ]]; then
   ensure_dir "$HOME/.codex"
-  ensure_symlink "$AI_SETTINGS_ROOT/AGENTS.md" "$HOME/.codex/AGENTS.md"
+  "$SCRIPT_DIR/sync-cursor.sh" --codex
 else
   echo "[dry-run] ensure_dir $HOME/.codex"
-  echo "[dry-run] ensure_symlink $AI_SETTINGS_ROOT/AGENTS.md -> $HOME/.codex/AGENTS.md"
+  echo "[dry-run] $SCRIPT_DIR/sync-cursor.sh --codex"
 fi
-log_warn "~/.codex/config.toml — review and merge from $AI_SETTINGS_ROOT/settings/codex-config.toml manually if needed"
 
 # --- Gemini CLI ---
 log_info "Setting up Gemini CLI..."

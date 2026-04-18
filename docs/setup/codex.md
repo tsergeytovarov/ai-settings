@@ -2,40 +2,44 @@
 
 ## После `scripts/install.sh`
 
-Проверь симлинк:
+Проверь, что на месте плоский AGENTS.md с развёрнутыми импортами:
 
 ```bash
 ls -la ~/.codex/AGENTS.md
-# -> ~/ai-settings/AGENTS.md
+# -> обычный файл, ~20 КБ (не симлинк)
+```
+
+Почему не симлинк: Codex **не резолвит `@imports`** в стиле Claude/Gemini. Если положить туда симлинк на исходный `AGENTS.md` с `@docs/ai/persona.md`, Codex увидит только строку `@docs/ai/persona.md` как текст и не загрузит содержимое. Поэтому `install.sh` вызывает `sync-cursor.sh --codex`, который разворачивает все `@imports` прямо в тело файла.
+
+## Обновление после `git pull`
+
+```bash
+cd ~/ai-settings && git pull
+~/ai-settings/scripts/install.sh
+```
+
+`install.sh` перегенерирует плоский `~/.codex/AGENTS.md`. Вручную прогонять ничего не надо.
+
+Если хочется обновить только Codex без остального — напрямую:
+
+```bash
+~/ai-settings/scripts/sync-cursor.sh --codex
 ```
 
 ## `config.toml`
 
-`~/.codex/config.toml` **не перезаписывается** установщиком. Эталон лежит в `settings/codex-config.toml` — сравни и вручную смерджи нужное:
-
-```bash
-diff ~/.codex/config.toml ~/ai-settings/settings/codex-config.toml
-```
+`~/.codex/config.toml` **не трогается** установщиком — там твои настройки модели, плагинов, trusted projects. В репе эталона больше нет — было фиктивное содержимое, удалено в v0.1.1.
 
 ## Нюанс: скиллы и субагенты
 
-У Codex нет нативной системы скиллов и субагентов как у Claude Code. Но `AGENTS.md` читается как обычный текст — роли и триггеры из `agents/*/AGENT.md` модель может имитировать при ручном запросе:
+У Codex нет нативной системы скиллов и субагентов как у Claude Code. Но плоский `AGENTS.md` содержит ссылки на `agents/*/AGENT.md` и `skills/*/SKILL.md` в репе — модель может имитировать роли при ручном запросе:
 
-> «ты сейчас code-reviewer, проверь этот diff по правилам из agents/code-reviewer/AGENT.md»
+> «ты сейчас code-reviewer, проверь этот diff по правилам из `~/ai-settings/agents/code-reviewer/AGENT.md`»
 
-## @imports
+## Проверка
 
-Codex не резолвит `@docs/ai/*.md` автоматически — видит их как ссылки в тексте. Два варианта:
+Запусти Codex в произвольной папке, задай:
 
-1. **Довериться модели** — она увидит путь `@docs/ai/persona.md` и при необходимости сама «сходит» в файл. Работает для Claude-style моделей прилично.
-2. **Inline-копия критичного** — если нужно максимальное compliance, добавь в `~/.codex/AGENTS.md` inline-копию важного (persona, hard-gates). Минус: дрейф при обновлении глобальных правил.
+> «напиши коммит»
 
-Гибкость на твоё усмотрение. Для старта — вариант 1.
-
-## Обновление
-
-```bash
-cd ~/ai-settings && git pull
-```
-
-Симлинк остаётся валидным. Если менял `~/.codex/config.toml` — пересмотри diff с эталоном после pull.
+Если модель предлагает Conventional Commits с русским описанием (`feat(scope): ...`) и не ломает персону Бориса — правила подхвачены. Если выдаёт generic английский — значит плоский файл не прогрузился; проверь `head ~/.codex/AGENTS.md` и перегенерируй через `sync-cursor.sh --codex`.

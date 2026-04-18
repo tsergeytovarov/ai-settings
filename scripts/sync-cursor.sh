@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Generate a flat Cursor .mdc rules file by resolving @imports in AGENTS.md."""
+"""Generate a flat rules file by resolving @imports in AGENTS.md.
+
+Назначения:
+- `--global` / `--project PATH` — для Cursor (`.cursor/rules/ai-settings.mdc`, с frontmatter `alwaysApply: true`).
+- `--codex` — для Codex CLI (`~/.codex/AGENTS.md`, без frontmatter). Codex не резолвит @imports,
+  поэтому нужен плоский файл.
+"""
 from __future__ import annotations
 
 import argparse
@@ -28,12 +34,28 @@ def resolve_imports(text: str, base_dir: Path, seen: set[Path] | None = None) ->
     return IMPORT_RE.sub(replace, text)
 
 
+def write_safely(dst: Path, content: str) -> None:
+    """Пишем в dst так, чтобы не испортить исходный файл через симлинк.
+
+    Если dst — симлинк (как после старого install.sh, когда ~/.codex/AGENTS.md
+    был симлинком в репо), Path.write_text() пошёл бы по симлинку и перезаписал
+    бы исходный AGENTS.md в репозитории. Поэтому сначала unlink, потом write.
+    """
+    if dst.is_symlink() or dst.exists():
+        if dst.is_symlink():
+            dst.unlink()
+    dst.parent.mkdir(parents=True, exist_ok=True)
+    dst.write_text(content, encoding="utf-8")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--global", dest="is_global", action="store_true",
-                        help="Write to ~/.cursor/rules/ai-settings.mdc")
+                        help="Cursor: write to ~/.cursor/rules/ai-settings.mdc")
     parser.add_argument("--project", type=Path, default=None,
-                        help="Write to <project>/.cursor/rules/ai-settings.mdc")
+                        help="Cursor: write to <project>/.cursor/rules/ai-settings.mdc")
+    parser.add_argument("--codex", action="store_true",
+                        help="Codex: write flat AGENTS.md to ~/.codex/AGENTS.md (no frontmatter)")
     parser.add_argument("--source", type=Path,
                         default=Path(__file__).resolve().parent.parent / "AGENTS.md")
     parser.add_argument("--check", action="store_true",
@@ -46,23 +68,32 @@ def main() -> int:
         return 1
 
     flat = resolve_imports(source.read_text(encoding="utf-8"), source.parent)
-    frontmatter = "---\nalwaysApply: true\n---\n\n"
-    output = frontmatter + flat
+
+    if args.codex:
+        # Codex не поддерживает Cursor frontmatter, пишем плоский markdown.
+        output = flat
+    else:
+        frontmatter = "---\nalwaysApply: true\n---\n\n"
+        output = frontmatter + flat
 
     if args.check:
         print(f"[ok] resolved {source} ({len(output)} chars)")
         return 0
 
+    targets = [bool(args.is_global), bool(args.project), bool(args.codex)]
+    if sum(targets) != 1:
+        print("[error] exactly one of --global / --project PATH / --codex required",
+              file=sys.stderr)
+        return 2
+
     if args.is_global:
         dst = Path.home() / ".cursor" / "rules" / "ai-settings.mdc"
     elif args.project:
         dst = args.project.resolve() / ".cursor" / "rules" / "ai-settings.mdc"
-    else:
-        print("[error] either --global or --project PATH required", file=sys.stderr)
-        return 2
+    else:  # args.codex
+        dst = Path.home() / ".codex" / "AGENTS.md"
 
-    dst.parent.mkdir(parents=True, exist_ok=True)
-    dst.write_text(output, encoding="utf-8")
+    write_safely(dst, output)
     print(f"[ok] wrote {dst}")
     return 0
 
