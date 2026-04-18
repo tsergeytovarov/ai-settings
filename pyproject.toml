@@ -1,0 +1,18 @@
+[project]
+name = "ai-settings"
+version = "0.1.0"
+description = "Centralized AI settings library (Claude Code, Codex, Cursor, Gemini)"
+requires-python = ">=3.12"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pyyaml>=6.0",
+]
+
+[tool.setuptools]
+packages = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
