@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util";
-import { resolve, isAbsolute } from "node:path";
+import { isAbsolute } from "node:path";
 import { validateTitle } from "./lib/title.ts";
 import { renderCover } from "./lib/render.ts";
 
@@ -33,16 +33,14 @@ async function main(): Promise<void> {
   const validation = validateTitle(title);
   if (!validation.ok) die(1, validation.error);
 
-  const outPath = resolve(outArg);
-
   try {
-    await renderCover(title, outPath);
+    await renderCover(title, outArg);
   } catch (err) {
     const msg = err instanceof Error ? err.stack ?? err.message : String(err);
     die(2, `ошибка рендера:\n${msg}`);
   }
 
-  process.stdout.write(`${outPath}\n`);
+  process.stdout.write(`${outArg}\n`);
 }
 
 main().catch((err) => {

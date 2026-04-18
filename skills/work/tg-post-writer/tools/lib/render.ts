@@ -128,11 +128,12 @@ async function loadFont(): Promise<ArrayBuffer> {
   // See assets/fonts/Literata-Variable.ttf (source) vs Literata-SemiBold.ttf (static instance).
   const fontPath = resolve(here, "../../assets/fonts/Literata-SemiBold.ttf");
   const buf = await readFile(fontPath);
-  return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength);
+  return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength); // buf.buffer is a shared pool — must slice to own bytes
 }
 
 export async function renderCover(title: string, outPath: string): Promise<void> {
   const displayTitle = truncateTitle(title);
+  // fontSize scaled against final (possibly truncated) length, not original
   const fontSize = computeFontSize(displayTitle);
 
   const fontData = await loadFont();
