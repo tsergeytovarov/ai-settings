@@ -65,7 +65,6 @@ function buildElement(displayTitle: string, fontSize: number): JSXNode {
               top: TITLE_TOP,
               left: PADDING,
               right: PADDING,
-              width: CANVAS - PADDING * 2,
               fontSize: fontSize,
               fontWeight: 600,
               color: COLORS.textPrimary,
@@ -138,7 +137,9 @@ export async function renderCover(title: string, outPath: string): Promise<void>
 
   const fontData = await loadFont();
 
-  const svg = await satori(buildElement(displayTitle, fontSize) as never, {
+  // satori types expect ReactNode but accept plain {type, props} objects;
+  // cast via Parameters avoids pulling in React types
+  const svg = await satori(buildElement(displayTitle, fontSize) as Parameters<typeof satori>[0], {
     width: CANVAS,
     height: CANVAS,
     fonts: [
