@@ -6,15 +6,24 @@
 
 ## Установка
 
+> ⚠️ **СТОП. Прочитай это перед `install.sh`.**
+>
+> Это мой личный пресет: персона «Борис», русский язык, мой стек (Python/TypeScript/Next.js/FastAPI/Yandex Cloud), мои скиллы (русские коммиты, посты в TG).
+>
+> **Сначала** клонируй репо и пройди [docs/setup/customization.md](docs/setup/customization.md) — там чеклист, что править (persona, style, стек) и готовые промпты под каждую секцию (LLM задаст 4–6 вопросов и вернёт готовый файл).
+>
+> **Потом** запускай `install.sh`. Иначе ассистент будет вести себя как я, а не как ты.
+
 ```bash
 git clone https://github.com/tsergeytovarov/ai-settings.git ~/ai-settings
 cd ~/ai-settings
+
+# 1. Кастомизируй под себя — см. docs/setup/customization.md
+# 2. Установи:
 ./scripts/install.sh
 ```
 
 Установщик идемпотентный — безопасно запускать повторно. Существующие файлы бэкапятся в `backups/<timestamp>/`.
-
-> **Важно:** это мой личный пресет — персона «Борис», русский язык, мой стек. Перед использованием прочитай [docs/setup/customization.md](docs/setup/customization.md) и поправь `docs/ai/persona.md` и `docs/ai/style.md` под себя. Иначе ассистент будет вести себя как я, а не как ты.
 
 ## Структура
 
