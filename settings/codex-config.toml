@@ -1,0 +1,14 @@
+# Codex CLI settings — merge-friendly фрагмент.
+# install.sh объединяет этот файл с существующим ~/.codex/config.toml без overwrite.
+
+# Модель по умолчанию для задач по коду. Пользователь может переопределить.
+[model]
+default = "gpt-5"
+
+# Путь к AGENTS.md — проставляется симлинком в install.sh.
+[agents]
+agents_md_path = "~/.codex/AGENTS.md"
+
+# Поведение
+[behavior]
+ask_before_destructive = true
