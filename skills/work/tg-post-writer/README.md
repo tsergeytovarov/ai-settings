@@ -29,3 +29,28 @@
 - Эмодзи: максимум 2 на пост, только со смыслом.
 - Без «друзья, привет» и лести.
 - Без дежурных списков на 5+ пунктов, если тема это не требует.
+
+## Обложки
+
+Скилл может сгенерить квадратную обложку 1080×1080 в стилистике Meridian для поста. Автоматически предлагается после шага 7 (pre-send checklist) для постов длиннее 100 символов.
+
+### Ручной вызов
+
+```bash
+cd skills/work/tg-post-writer/tools
+npm install  # первый раз
+npx tsx render-cover.ts \
+  --title "Claude 4.7: тихий апгрейд в reasoning" \
+  --out /tmp/meridian-tg-cover.png
+```
+
+Вывод на stdout — абсолютный путь к PNG. Exit 0 — успех, 1 — ошибка валидации, 2 — ошибка рендера.
+
+### Структура
+
+- `tools/render-cover.ts` — CLI-точка входа
+- `tools/lib/title.ts` — скейл + обрезка + валидация title
+- `tools/lib/render.ts` — satori + resvg pipeline
+- `assets/fonts/Literata-SemiBold.ttf` — шрифт (SIL OFL)
+
+Дизайн-спека: `ai-settings/docs/superpowers/specs/2026-04-18-tg-post-cover-design.md`.

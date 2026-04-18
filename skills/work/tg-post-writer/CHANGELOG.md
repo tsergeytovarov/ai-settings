@@ -2,6 +2,19 @@
 
 Формат: [Keep a Changelog](https://keepachangelog.com/ru/1.1.0/), семантическое версионирование.
 
+## [1.2.0] — 2026-04-18
+
+### Добавлено
+- `tools/render-cover.ts` — CLI-скрипт для генерации обложек 1080×1080 в стилистике Meridian (тёплый фон `#F7F4EE`, оранжевый акцент `#C0632A`, Literata SemiBold для title). Стек: satori + @resvg/resvg-js.
+- `tools/lib/title.ts` — скейл font-size по длине, обрезка длинных title на границе слова, валидация (пустой / эмоджи).
+- `tools/lib/render.ts` — JSX-подобное дерево (plain object, без React), рендер через satori → svg → png.
+- `tools/tests/` — юнит-тесты через `node:test` для чистой логики title (скейл, обрезка, валидация).
+- `assets/fonts/Literata-SemiBold.ttf` — статический TTF weight 600, извлечён из вариативного `Literata-Variable.ttf` через fonttools (satori не поддерживает variable TTF).
+- В `SKILL.md` — новый опциональный шаг 8 «Cover image» и раздел «Cover title rules» с формальными требованиями, примерами и анти-примерами.
+
+### Изменено
+- `SKILL.md` — версия поднята до 1.2.0.
+
 ## [1.1.0] — 2026-04-18
 
 ### Добавлено
