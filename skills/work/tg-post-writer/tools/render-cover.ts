@@ -10,13 +10,18 @@ function die(code: 1 | 2, message: string): never {
 }
 
 async function main(): Promise<void> {
-  const { values } = parseArgs({
-    options: {
-      title: { type: "string" },
-      out: { type: "string" },
-    },
-    strict: true,
-  });
+  let values: { title?: string; out?: string };
+  try {
+    ({ values } = parseArgs({
+      options: {
+        title: { type: "string" },
+        out: { type: "string" },
+      },
+      strict: true,
+    }));
+  } catch (err) {
+    die(1, err instanceof Error ? err.message : String(err));
+  }
 
   const title = values.title;
   const outArg = values.out;
