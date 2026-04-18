@@ -63,6 +63,21 @@ git pull
 
 Симлинки не пересоздаются — новое содержимое подхватывается автоматически.
 
+## Скиллы в Claude Desktop
+
+Claude Desktop не читает `~/.claude/skills/` (это канал Claude Code CLI), а принимает скиллы только через Upload в Settings. Одной командой:
+
+```bash
+./scripts/deploy-skills.sh
+```
+
+Скрипт:
+- прогоняет `install.sh` (Claude Code + Codex + Gemini + Cursor);
+- пакует каждый скилл в zip в `dist/claude-desktop-skills/`;
+- открывает Finder с zip'ами.
+
+Дальше в Claude Desktop: Settings → Capabilities → Skills → Upload, перетащи все zip'ы. Watched-folder у Desktop нет, Anthropic заставляет грузить руками — поэтому полной автоматизации быть не может.
+
 ## Документация
 
 - [Кастомизация под себя](docs/setup/customization.md) ← **начни отсюда**

@@ -9,6 +9,7 @@ __pycache__/
 venv/
 node_modules/
 backups/
+dist/
 .cursor/
 .claude/sessions/
 .claude/cache/
