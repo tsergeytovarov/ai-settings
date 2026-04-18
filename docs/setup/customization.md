@@ -78,7 +78,61 @@ Uncertainty) — но не копируй содержание.
 
 ---
 
-### 3. `AGENTS.md`, секция 4 — Tech Stack
+### 3. `docs/ai/writing-voice.md` и `skills/work/tg-post-writer/references/`
+
+Голос **генерируемого контента** — коммиты, PR, CHANGELOG, доки, посты, статьи. Применяется везде, кроме UI-строк и ошибок для конечных пользователей. У меня там правила моего канала «··• Серёжа печатает»: нет канцелярита и инфобиза, кавычки только для прямых цитат, гипербола как приём, автор всегда в тексте через маркеры «на мой взгляд / я считаю», смешанный ритм предложений.
+
+Это полностью персональный модуль — забирать мой голос нельзя, надо описать свой.
+
+**Промпт (свой voice с нуля):**
+
+```
+Я переписываю docs/ai/writing-voice.md под свой стиль. Открой текущий файл
+для структуры (секции Scope / Core voice / Author presence / Fact vs opinion /
+Position / Hyperbole / Rhythm / Lexicon / Quotation marks / Emoji / Endings /
+Commit tone) — содержимое не копируй, там мой голос.
+
+Задай мне 6 вопросов по одному:
+1. Опиши в трёх предложениях свой писательский голос. Представь, что
+   друг описывает твой тон кому-то третьему.
+2. Какие стоп-слова / обороты ты НЕ терпишь в своих текстах?
+   (канцелярит, инфобиз, штампы, конкретные слова)
+3. Как у тебя с кавычками, эмодзи, восклицательными — жёсткие правила
+   или свободно?
+4. Ты в тексте всегда от первого лица или прячешься за «мы / объективно»?
+5. Готов ли использовать гиперболу / провокацию / жёсткую позицию
+   или всегда смягчаешь?
+6. Какой тон коммитов и PR: такой же как в постах или суше / формальнее?
+
+На выходе — готовый writing-voice.md на английском с Russian-specific
+примерами (как в текущем), ссылкой на свой канонический стайл-гайд
+в skills/work/tg-post-writer/references/ (если ведёшь канал) или без
+(если не ведёшь). Верни в кодблоке.
+```
+
+**Промпт (есть канал — извлечь voice из постов):**
+
+```
+У меня есть канал в Telegram, я хочу чтобы ассистент писал в его стиле.
+Я пришлю 10–15 своих постов следующим сообщением.
+
+План работы:
+1. Я присылаю посты.
+2. Ты анализируешь их и извлекаешь стайл-гайд по структуре раздела
+   skills/work/tg-post-writer/references/style-guide.md в этом репо:
+   голос, заходы, структура, ритм, лексика, кавычки, концовки, чек-лист.
+3. На основе стайл-гайда делаешь общий docs/ai/writing-voice.md —
+   подмножество правил, применимых везде (коммиты, PR, доки), а не
+   только к постам.
+4. Возвращаешь оба файла в кодблоках, готовые к сохранению.
+
+Пиши оба файла на английском с Russian-specific примерами
+(как в этом репо). Готов?
+```
+
+---
+
+### 4. `AGENTS.md`, секция 5 — Tech Stack
 
 Там у меня:
 ```
@@ -96,7 +150,7 @@ Uncertainty) — но не копируй содержание.
 **Промпт:**
 
 ```
-Я обновляю секцию «4. Tech Stack (with versions)» в AGENTS.md. Текущее
+Я обновляю секцию «5. Tech Stack (with versions)» в AGENTS.md. Текущее
 содержимое — мой стек (Python/TypeScript/Next.js/FastAPI/Yandex Cloud),
 мне не подходит.
 
@@ -110,13 +164,13 @@ Uncertainty) — но не копируй содержание.
 5. Какое облако и/или DevOps-инструменты (CI, деплой, мониторинг)?
 
 На выходе — готовый список буллетов в точно таком же формате, как
-текущая секция 4 (строки с дефисом, версии через backtick). Английский.
-Верни в кодблоке, чтобы я заменил старую секцию 4 целиком.
+текущая секция 5 (строки с дефисом, версии через backtick). Английский.
+Верни в кодблоке, чтобы я заменил старую секцию 5 целиком.
 ```
 
 ---
 
-### 4. `docs/ai/commands.md`
+### 5. `docs/ai/commands.md`
 
 Канонические команды для твоих инструментов. У меня pytest, uv, npm, git, gh, yc. Если используешь poetry/pnpm/yarn/aws — замени.
 
@@ -144,9 +198,9 @@ git, gh, yc). Открой файл для структуры (секции по
 
 ## Опционально (если стек / задачи отличаются)
 
-### 5. `docs/ai/python.md`, `docs/ai/typescript.md`, `docs/ai/ml.md`
+### 6. `docs/ai/python.md`, `docs/ai/typescript.md`, `docs/ai/ml.md`
 
-Языковые стандарты. Если не пишешь на Python — удали `python.md` и убери его `@import` из `AGENTS.md` секции 5. Аналогично для TypeScript и ML. Лучше меньше, чем левое.
+Языковые стандарты. Если не пишешь на Python — удали `python.md` и убери его `@import` из `AGENTS.md` секции 6. Аналогично для TypeScript и ML. Лучше меньше, чем левое.
 
 **Промпт (адаптация одного модуля):**
 
@@ -171,14 +225,14 @@ git, gh, yc). Открой файл для структуры (секции по
 
 ```
 Я не пишу на <LANG>. Удали docs/ai/<LANG>.md и убери строку
-`- <Lang>: @docs/ai/<lang>.md` из секции 5 в AGENTS.md (или удали
+`- <Lang>: @docs/ai/<lang>.md` из секции 6 в AGENTS.md (или удали
 всю подсекцию language-specific, если там больше ничего не осталось).
 Проверь, что imports остались валидными: ./scripts/sync-cursor.sh --check
 ```
 
 ---
 
-### 6. `docs/ai/git-workflow.md`
+### 7. `docs/ai/git-workflow.md`
 
 Мой формат: Conventional Commits, **description на русском**, PR title+description на русском.
 - Если команда коммитит на английском — поменяй примеры и явно скажи «description — English, imperative».
@@ -204,7 +258,7 @@ Pre-commit discipline, Merge strategy, Never). Верни в кодблоке.
 
 ---
 
-### 7. `skills/code/ru-commit-message`, `ru-pr-description`, `changelog-entry`
+### 8. `skills/code/ru-commit-message`, `ru-pr-description`, `changelog-entry`
 
 Все три — русскоязычные.
 - Если коммитишь на английском: удали `ru-commit-message` и `ru-pr-description`, или скопируй и переделай в `en-commit-message`.
@@ -232,7 +286,7 @@ SKILL.md и references/.
 
 ---
 
-### 8. `skills/work/tg-post-writer`
+### 9. `skills/work/tg-post-writer`
 
 Личный скилл для постов в мой Telegram-канал в стиле Бориса. Если не ведёшь TG-канал — удаляй папку целиком. Если ведёшь, но на своём стиле — перепиши `SKILL.md` под свой тон и удали примеры.
 
@@ -248,7 +302,8 @@ SKILL.md и references/.
 
 ```
 Я пишу посты в свой блог/канал, но в другом стиле. Перепиши
-skills/work/tg-post-writer/SKILL.md и references/examples.md под меня.
+skills/work/tg-post-writer/SKILL.md, references/style-guide.md и
+references/examples.md под меня.
 
 Задай мне 4 вопроса по одному:
 1. Где ты публикуешь? (Telegram / Twitter / LinkedIn / свой блог)
@@ -256,15 +311,20 @@ skills/work/tg-post-writer/SKILL.md и references/examples.md под меня.
 3. Какой тон: экспертный / личный / обучающий / провокационный?
 4. Типовая длина поста и структура (hook, body, CTA)?
 
-На выходе — обновлённые SKILL.md (frontmatter + Purpose + Process + Guidelines)
-на английском, и references/examples.md с 2–3 примерами на твоём языке.
-Версию в SKILL.md сбрось до 1.0.0, в CHANGELOG.md скилла — запись
-«major rewrite under <name> persona». Прогони pytest tests/.
+Дополнительно: пришлю 10–15 своих постов следующим сообщением, из них
+извлеки стайл-гайд по структуре текущего references/style-guide.md
+(голос, заходы, структура, ритм, лексика, кавычки, концовки, чек-лист)
+и подбери 8–10 самых характерных в references/examples.md.
+
+На выходе — обновлённые SKILL.md, references/style-guide.md,
+references/examples.md. Версию в SKILL.md сбрось до 1.0.0,
+в CHANGELOG.md скилла — запись «major rewrite under <name> voice».
+Прогони pytest tests/.
 ```
 
 ---
 
-### 9. `agents/`
+### 10. `agents/`
 
 6 субагентов: `code-reviewer`, `debugger`, `fastapi-backend`, `next-frontend`, `ml-helper`, `pr-writer`.
 - `fastapi-backend`, `next-frontend`, `ml-helper` — узко-стековые. Если не работаешь с FastAPI / Next.js / ML — удали соответствующие папки, чтобы они не всплывали ложными триггерами.
@@ -273,7 +333,7 @@ skills/work/tg-post-writer/SKILL.md и references/examples.md под меня.
 **Промпт (аудит под стек):**
 
 ```
-Посмотри на мою секцию 4 Tech Stack в AGENTS.md (свежеобновлённую) и на
+Посмотри на мою секцию 5 Tech Stack в AGENTS.md (свежеобновлённую) и на
 папки в agents/. Для каждого субагента скажи:
 - Релевантен ли он моему стеку?
 - Если да — нужна ли правка AGENT.md (frontmatter description, содержание
@@ -287,7 +347,7 @@ skills/work/tg-post-writer/SKILL.md и references/examples.md под меня.
 
 ---
 
-### 10. `docs/ai/red-flags.md`, `three-tiers.md`, `hard-gates.md`
+### 11. `docs/ai/red-flags.md`, `three-tiers.md`, `hard-gates.md`
 
 Это общие safety-правила. Читаются как законы (hard-gates — буквально). Перед использованием пробеги глазами — согласен ли ты с каждым. У меня там вещи вроде «не делай `git push --force` без подтверждения», «не коммить `.env`» — обычно универсальное, но твои права.
 

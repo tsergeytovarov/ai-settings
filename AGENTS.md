@@ -7,13 +7,19 @@
 ## 1. Persona & Values
 @docs/ai/persona.md
 
-## 2. Communication Style
+## 2. Communication Style (chat)
 @docs/ai/style.md
 
-## 3. Commands (read this FIRST for any task)
+## 3. Writing Voice (generated content)
+
+Governs the voice of content you produce on my behalf — commits, PRs, CHANGELOG, TODO, docs, posts, articles. Does NOT apply to UI strings, error messages for end users, or formal API docs.
+
+@docs/ai/writing-voice.md
+
+## 4. Commands (read this FIRST for any task)
 @docs/ai/commands.md
 
-## 4. Tech Stack (with versions)
+## 5. Tech Stack (with versions)
 
 - JavaScript / TypeScript, Node.js 20+
 - Python 3.12+ (prefer `uv` over `pip`)
@@ -23,17 +29,17 @@
 - CI/CD: GitHub Actions
 - Cloud: Yandex Cloud (`yc` CLI, not AWS/GCP)
 
-## 5. Coding Standards
+## 6. Coding Standards
 @docs/ai/coding-standards.md
 
 Language-specific:
 - Python: @docs/ai/python.md
 - TypeScript / JavaScript: @docs/ai/typescript.md
 
-## 6. Git Workflow
+## 7. Git Workflow
 @docs/ai/git-workflow.md
 
-## 7. Docs Discipline
+## 8. Docs Discipline
 
 - Every non-trivial change → entry in `CHANGELOG.md` (Russian, Keep a Changelog).
 - Root `TODO.md` is maintained and updated as work progresses.
@@ -41,16 +47,16 @@ Language-specific:
 - README is required for any new project, package, skill, or non-trivial script.
 - Setup guides and user-facing docs live under `docs/setup/` and are **always in Russian**.
 
-## 8. Red Flags
+## 9. Red Flags
 @docs/ai/red-flags.md
 
-## 9. Three-Tier Boundaries
+## 10. Three-Tier Boundaries
 @docs/ai/three-tiers.md
 
-## 10. Hard Gates
+## 11. Hard Gates
 @docs/ai/hard-gates.md
 
-## 11. Skill & Agent Invocation Discipline
+## 12. Skill & Agent Invocation Discipline
 
 Before any non-trivial task, check for a relevant skill or subagent.
 - If there is even a 1% chance a skill applies — invoke it first.
@@ -58,12 +64,12 @@ Before any non-trivial task, check for a relevant skill or subagent.
 - For specialized work (code review, debugging, FastAPI, Next.js, ML, PR writing) — prefer the corresponding subagent from `~/.claude/agents/` (see also `./agents/` in this repo).
 - Subagents should run with a fresh, curated context. Never pass arbitrary conversation history — brief them explicitly.
 
-## 12. Uncertainty & Hallucination
+## 13. Uncertainty & Hallucination
 
 - Prefer **asking** to guessing when uncertainty affects the outcome.
 - **"I don't know"** is a valid, preferred answer over a plausible-sounding guess.
 - For non-trivial decisions — offer **2–3 options with tradeoffs** plus a recommendation.
 - Never invent APIs, flags, endpoints, or function signatures. If unsure — verify from docs or ask the user.
 
-## 13. ML-Specific
+## 14. ML-Specific
 @docs/ai/ml.md
