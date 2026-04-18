@@ -1,6 +1,6 @@
 ---
 name: tg-post-writer
-version: 1.1.0
+version: 1.2.0
 description: |
   Use when the user asks "напиши пост в тг / оформи это для телеграма / сделай tg-пост про X".
   Target: personal channel or group Telegram posts in Russian, in the channel's established voice.
@@ -46,6 +46,17 @@ Read both at least once per session. Do not copy phrases — reproduce logic, rh
    - Reflection / analysis: 1500–3000 chars.
    - Hard ceiling: ~3500 chars — above that, split into a series.
 7. Run the pre-send checklist (`style-guide.md` section 11) before returning. If any item fails — rewrite.
+8. **Cover image (опционально).** Если пост длиннее 100 символов — спроси пользователя: «Сгенерить обложку для поста?». Если да:
+   - Сформулируй `cover_title` по правилам в секции "Cover title rules" ниже.
+   - Покажи `cover_title` пользователю: «Обложка будет с заголовком: `<title>`. Так ок или поправить?». Пользователь может утвердить, попросить переделать или дать свой вариант.
+   - После подтверждения вызови скрипт:
+     ```
+     cd tools && npx tsx render-cover.ts \
+       --title "<cover_title>" \
+       --out /tmp/meridian-tg-$(date +%Y%m%d-%H%M%S).png
+     ```
+   - Верни путь к PNG пользователю в формате `file:///tmp/...` для быстрого открытия.
+   Если пост короче 100 символов — не предлагай, короткие заметки обходятся без обложки.
 
 # Hard rules (do not violate)
 
@@ -60,3 +71,34 @@ Read both at least once per session. Do not copy phrases — reproduce logic, rh
 The post text, ready to paste into Telegram.
 If the angle is ambiguous — offer **2 variants** with a one-sentence rationale for each.
 If the checklist fails any item — fix and re-check before returning; do not return a draft you know is off-voice.
+
+# Cover title rules
+
+Title для обложки формулируется **отдельно** от текста поста. В текст поста не попадает — живёт только на картинке.
+
+**Формальные требования:**
+- 3-8 слов
+- не предложение, не хук-фраза — **тезис**
+- третье лицо, нейтральный падеж (не «Смотрите сами…», не «Я думаю…»)
+- первая буква заглавная, остальные как в обычном предложении
+- без завершающих знаков (`.`, `!`, `?`, `…`)
+- без кавычек (правило Meridian: кавычки только для прямой речи)
+- без эмоджи, без хэштегов
+
+**Калибровочные примеры:**
+
+| Жанр поста | cover_title |
+|---|---|
+| Новость про модель | `Claude 4.7: тихий апгрейд в reasoning` |
+| Размышление про найм | `AI ломает воронку найма` |
+| Разбор инструмента | `Cursor больше не единственный выбор` |
+| Опыт / ретроспектива | `Год на AI-агентах: что сломалось` |
+
+**Анти-примеры:**
+
+- «Смотрите сами, Claude 4.7 умнее Opus» — хук-фраза, не тезис
+- «Что я думаю про AI-найм» — первое лицо, пустой смысл
+- «Claude 4.7 — это новый король reasoning!» — восклицательный
+- «Новая модель от Anthropic доступна в API с ценой 3/15 долларов за миллион токенов и контекстом 1 миллион» — не тезис, а простыня
+
+Если пользователь просит переделать — перегенерировать по тем же правилам, не спорить. Если пользователь даёт свой title — использовать как есть (правила — для автогенерации, не для пользовательского ввода).
