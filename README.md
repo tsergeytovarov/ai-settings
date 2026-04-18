@@ -7,7 +7,7 @@
 ## Установка
 
 ```bash
-git clone https://github.com/<user>/ai-settings.git ~/ai-settings
+git clone https://github.com/tsergeytovarov/ai-settings.git ~/ai-settings
 cd ~/ai-settings
 ./scripts/install.sh
 ```
