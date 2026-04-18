@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { computeFontSize, truncateTitle } from "../lib/title.ts";
+import { computeFontSize, truncateTitle, validateTitle } from "../lib/title.ts";
 
 test("computeFontSize: ≤30 символов → 128px", () => {
   assert.equal(computeFontSize("Короткий тезис"), 128);
@@ -51,4 +51,31 @@ test("truncateTitle: строка >140 без пробелов режется п
 
 test("truncateTitle: пустая строка возвращается как есть", () => {
   assert.equal(truncateTitle(""), "");
+});
+
+test("validateTitle: непустая строка → ok", () => {
+  const r = validateTitle("Нормальный заголовок");
+  assert.equal(r.ok, true);
+});
+
+test("validateTitle: пустая строка → error", () => {
+  const r = validateTitle("");
+  assert.equal(r.ok, false);
+  if (!r.ok) assert.match(r.error, /пуст/i);
+});
+
+test("validateTitle: только пробелы → error", () => {
+  const r = validateTitle("   ");
+  assert.equal(r.ok, false);
+});
+
+test("validateTitle: эмоджи → error", () => {
+  const r = validateTitle("Заголовок с 🎉 эмоджи");
+  assert.equal(r.ok, false);
+  if (!r.ok) assert.match(r.error, /эмоджи/i);
+});
+
+test("validateTitle: тире и кавычки-елочки разрешены", () => {
+  assert.equal(validateTitle("AI — это серьёзно").ok, true);
+  assert.equal(validateTitle("Он сказал «нет»").ok, true);
 });

@@ -21,3 +21,18 @@ export function truncateTitle(title: string): string {
   // Нет пробела в первых 139 — режем жёстко
   return head.join("") + "…";
 }
+
+export type ValidationResult = { ok: true } | { ok: false; error: string };
+
+// Regex для базовых эмоджи (covers Emoji_Presentation + most pictographs)
+const EMOJI_RE = /\p{Extended_Pictographic}/u;
+
+export function validateTitle(title: string): ValidationResult {
+  if (title.trim().length === 0) {
+    return { ok: false, error: "title пуст или состоит только из пробелов" };
+  }
+  if (EMOJI_RE.test(title)) {
+    return { ok: false, error: "title содержит эмоджи — по правилам бренда запрещено" };
+  }
+  return { ok: true };
+}
