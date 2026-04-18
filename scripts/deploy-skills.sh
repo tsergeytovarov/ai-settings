@@ -52,7 +52,7 @@ for skill_dir in "$REPO_ROOT"/skills/*/*/; do
     skill_name="$(basename "$skill_dir")"
     parent_dir="$(dirname "$skill_dir")"
     (cd "$parent_dir" && zip -rq "$DIST_DIR/$skill_name.zip" "$skill_name" \
-        -x "*/.DS_Store" "*/__pycache__/*" "*.pyc")
+        -x "*/.DS_Store" "*/__pycache__/*" "*.pyc" "*/node_modules/*")
     size="$(du -h "$DIST_DIR/$skill_name.zip" | awk '{print $1}')"
     echo "    zip: $skill_name ($size)"
     count=$((count + 1))
