@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# Global install: symlink ai-settings into ~/.claude, ~/.codex, ~/.gemini; set up Cursor rules.
+# Idempotent. Supports --dry-run.
+
+set -euo pipefail
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+AI_SETTINGS_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+export AI_SETTINGS_ROOT
+source "$SCRIPT_DIR/lib/common.sh"
+
+DRY_RUN=0
+for arg in "$@"; do
+  case "$arg" in
+    --dry-run) DRY_RUN=1 ;;
+    -h|--help)
+      cat <<EOF
+Usage: $0 [--dry-run]
+  --dry-run   Show actions without applying.
+EOF
+      exit 0
+      ;;
+  esac
+done
+
+log_info "ai-settings root: $AI_SETTINGS_ROOT"
+[[ $DRY_RUN -eq 1 ]] && log_warn "DRY RUN — no changes will be made"
+
+# --- Claude Code ---
+log_info "Setting up Claude Code..."
+if [[ $DRY_RUN -eq 0 ]]; then
+  ensure_dir "$HOME/.claude"
+  ensure_symlink "$AI_SETTINGS_ROOT/CLAUDE.md"         "$HOME/.claude/CLAUDE.md"
+  ensure_symlink "$AI_SETTINGS_ROOT/agents"            "$HOME/.claude/agents"
+  ensure_symlink "$AI_SETTINGS_ROOT/skills"            "$HOME/.claude/skills"
+  ensure_symlink "$AI_SETTINGS_ROOT/settings/hooks"    "$HOME/.claude/hooks"
+else
+  echo "[dry-run] ensure_dir $HOME/.claude"
+  echo "[dry-run] ensure_symlink $AI_SETTINGS_ROOT/CLAUDE.md -> $HOME/.claude/CLAUDE.md"
+  echo "[dry-run] ensure_symlink $AI_SETTINGS_ROOT/agents -> $HOME/.claude/agents"
+  echo "[dry-run] ensure_symlink $AI_SETTINGS_ROOT/skills -> $HOME/.claude/skills"
+  echo "[dry-run] ensure_symlink $AI_SETTINGS_ROOT/settings/hooks -> $HOME/.claude/hooks"
+fi
+
+# settings.json — copy, don't symlink (user may customize locally)
+settings_target="$HOME/.claude/settings.json"
+settings_source="$AI_SETTINGS_ROOT/settings/claude-settings.json"
+if [[ ! -f "$settings_target" ]]; then
+  log_info "No existing ~/.claude/settings.json — installing from template"
+  if [[ $DRY_RUN -eq 0 ]]; then
+    cp "$settings_source" "$settings_target"
+  else
+    echo "[dry-run] cp $settings_source $settings_target"
+  fi
+else
+  log_warn "Existing ~/.claude/settings.json — not overwriting. Diff with: diff $settings_source $settings_target"
+fi
+
+# --- Codex CLI ---
+log_info "Setting up Codex CLI..."
+if [[ $DRY_RUN -eq 0 ]]; then
+  ensure_dir "$HOME/.codex"
+  ensure_symlink "$AI_SETTINGS_ROOT/AGENTS.md" "$HOME/.codex/AGENTS.md"
+else
+  echo "[dry-run] ensure_dir $HOME/.codex"
+  echo "[dry-run] ensure_symlink $AI_SETTINGS_ROOT/AGENTS.md -> $HOME/.codex/AGENTS.md"
+fi
+log_warn "~/.codex/config.toml — review and merge from $AI_SETTINGS_ROOT/settings/codex-config.toml manually if needed"
+
+# --- Gemini CLI ---
+log_info "Setting up Gemini CLI..."
+if [[ $DRY_RUN -eq 0 ]]; then
+  ensure_dir "$HOME/.gemini"
+  ensure_symlink "$AI_SETTINGS_ROOT/GEMINI.md" "$HOME/.gemini/GEMINI.md"
+else
+  echo "[dry-run] ensure_dir $HOME/.gemini"
+  echo "[dry-run] ensure_symlink $AI_SETTINGS_ROOT/GEMINI.md -> $HOME/.gemini/GEMINI.md"
+fi
+
+# --- Cursor (generate flat rules file) ---
+log_info "Setting up Cursor (via sync-cursor.sh)..."
+if [[ -x "$SCRIPT_DIR/sync-cursor.sh" ]]; then
+  if [[ $DRY_RUN -eq 0 ]]; then
+    "$SCRIPT_DIR/sync-cursor.sh" --global
+  else
+    echo "[dry-run] $SCRIPT_DIR/sync-cursor.sh --global"
+  fi
+else
+  log_warn "sync-cursor.sh not found or not executable; skipping"
+fi
+
+log_ok "ai-settings installation complete."
