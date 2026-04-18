@@ -14,6 +14,8 @@ cd ~/ai-settings
 
 Установщик идемпотентный — безопасно запускать повторно. Существующие файлы бэкапятся в `backups/<timestamp>/`.
 
+> **Важно:** это мой личный пресет — персона «Борис», русский язык, мой стек. Перед использованием прочитай [docs/setup/customization.md](docs/setup/customization.md) и поправь `docs/ai/persona.md` и `docs/ai/style.md` под себя. Иначе ассистент будет вести себя как я, а не как ты.
+
 ## Структура
 
 ```
@@ -54,6 +56,7 @@ git pull
 
 ## Документация
 
+- [Кастомизация под себя](docs/setup/customization.md) ← **начни отсюда**
 - [Подключение Claude Code](docs/setup/claude-code.md)
 - [Подключение Codex CLI](docs/setup/codex.md)
 - [Подключение Cursor](docs/setup/cursor.md)
