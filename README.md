@@ -34,7 +34,7 @@ ai-settings/
 ├── docs/ai/                     # модули, подключаемые через @imports
 ├── docs/setup/                  # гайды по подключению (на русском)
 ├── agents/                      # 6 специализированных субагентов
-├── skills/                      # скиллы (code/ и work/), с semver-версионированием
+├── skills/                      # скиллы в skills/<namespace>/, с semver-версионированием
 ├── settings/                    # эталонные settings.json / config.toml / хуки
 ├── scripts/                     # install.sh, init-project.sh, sync-cursor.sh, ...
 ├── examples/                    # курируемые ссылки и промпты
