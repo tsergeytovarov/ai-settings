@@ -23,6 +23,20 @@ EOF
 done
 
 log_info "ai-settings root: $AI_SETTINGS_ROOT"
+
+# --- Windows check ---
+if [[ -z "${WSL_DISTRO_NAME:-}" ]]; then
+  case "$OSTYPE" in
+    msys*|cygwin*|win32*)
+      echo "Windows detected without WSL."
+      echo "This script requires WSL (Windows Subsystem for Linux)."
+      echo "Please run this script from a WSL terminal."
+      echo "Manual setup instructions: docs/setup/claude-code.md (Windows section)"
+      exit 1
+      ;;
+  esac
+fi
+
 [[ $DRY_RUN -eq 1 ]] && log_warn "DRY RUN — no changes will be made"
 
 # --- Claude Code ---
@@ -149,5 +163,22 @@ EOF
 }
 
 _generate_skill_commands
+
+# --- RTK (Rust Token Killer) ---
+log_info "Setting up RTK (Rust Token Killer)..."
+if command -v rtk &>/dev/null; then
+  log_ok "rtk already installed: $(rtk --version 2>/dev/null || echo 'unknown version')"
+else
+  log_info "rtk not found. Installing..."
+  if [[ $DRY_RUN -eq 1 ]]; then
+    echo "[dry-run] install rtk binary"
+  elif command -v brew &>/dev/null; then
+    brew install rtk
+    log_ok "rtk installed via Homebrew"
+  else
+    curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
+    log_ok "rtk installed via install script"
+  fi
+fi
 
 log_ok "ai-settings installation complete."
