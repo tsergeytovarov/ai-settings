@@ -77,7 +77,7 @@ Before any non-trivial task, check for a relevant skill or subagent.
 > Read it manually when working on ML tasks: `@./docs/ai/ml.md`
 
 ## 15. RTK (token-optimized bash output)
-@docs/ai/rtk-awareness.md
+@./docs/ai/rtk-awareness.md
 
 ## Compact Instructions
 
