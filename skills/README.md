@@ -72,3 +72,4 @@ tags: [git, markdown, russian, ...]
 - `popovs/ru-pr-description` — PR-описание на русском по шаблону.
 - `popovs/changelog-entry` — запись в корневой `CHANGELOG.md` проекта.
 - `popovs/tg-post-writer` — Telegram-посты в личной стилистике.
+- `popovs/boilerplate` — развернуть новый проект: шаблон + GitHub репо + AI-правила + инструкция деплоя.
