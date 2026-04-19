@@ -2,9 +2,9 @@
 
 Библиотека кастомных скиллов для AI-платформ (Claude Code, Codex, Cursor, Gemini CLI).
 
-Разделение:
-- `code/` — скиллы для кодинг-задач (commit-сообщения, PR-описания, changelog и т.д.).
-- `work/` — скиллы для работы, не связанной напрямую с кодом (тексты, посты, research).
+Все кастомные скиллы живут в `popovs/` — единый неймспейс `popovs:` в Claude Code.
+При установке (`scripts/install.sh`) автоматически генерируются слеш-команды `~/.claude/commands/popovs/`,
+что делает каждый скилл доступным через `/popovs:<name>` в интерфейсе.
 
 ## Правила
 
@@ -68,7 +68,7 @@ tags: [git, markdown, russian, ...]
 
 ## Стартовый набор
 
-- `code/ru-commit-message` — conventional commit на русском из staged diff.
-- `code/ru-pr-description` — PR-описание на русском по шаблону.
-- `code/changelog-entry` — запись в корневой `CHANGELOG.md` проекта.
-- `work/tg-post-writer` — Telegram-посты в личной стилистике.
+- `popovs/ru-commit-message` — conventional commit на русском из staged diff.
+- `popovs/ru-pr-description` — PR-описание на русском по шаблону.
+- `popovs/changelog-entry` — запись в корневой `CHANGELOG.md` проекта.
+- `popovs/tg-post-writer` — Telegram-посты в личной стилистике.

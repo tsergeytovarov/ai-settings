@@ -90,4 +90,65 @@ else
   log_warn "sync-cursor.sh not found or not executable; skipping"
 fi
 
+# --- Claude Code: slash commands for popovs: skills ---
+# Generates ~/.claude/commands/popovs/<skill>.md for each skill in skills/popovs/.
+# This makes popovs: skills accessible via / in the Claude Code interface.
+log_info "Generating popovs: slash commands for Claude Code..."
+
+_generate_popovs_commands() {
+  local skills_dir="$AI_SETTINGS_ROOT/skills/popovs"
+  local commands_dir="$HOME/.claude/commands/popovs"
+
+  if [[ ! -d "$skills_dir" ]]; then
+    log_warn "skills/popovs not found, skipping command generation"
+    return 0
+  fi
+
+  if [[ $DRY_RUN -eq 0 ]]; then
+    ensure_dir "$commands_dir"
+  else
+    echo "[dry-run] ensure_dir $commands_dir"
+  fi
+
+  local count=0
+  for skill_dir in "$skills_dir"/*/; do
+    [[ -f "$skill_dir/SKILL.md" ]] || continue
+    local skill_name
+    skill_name="$(basename "$skill_dir")"
+
+    if [[ $DRY_RUN -eq 1 ]]; then
+      echo "[dry-run] write $commands_dir/$skill_name.md  (popovs:$skill_name)"
+      count=$((count + 1))
+      continue
+    fi
+
+    local desc
+    desc=$(SKILL_MD="$skill_dir/SKILL.md" SKILL_NAME="$skill_name" python3 <<'PYEOF'
+import os, re
+txt = open(os.environ['SKILL_MD']).read()
+m = re.search(r'description:\s*\|?\n\s*(.+)', txt)
+if m:
+    d = m.group(1).strip()
+else:
+    m2 = re.search(r'description:\s*(.+)', txt, re.MULTILINE)
+    d = m2.group(1).strip() if m2 else os.environ.get('SKILL_NAME', 'skill')
+print(d.replace('"', "'"))
+PYEOF
+    )
+
+    cat > "$commands_dir/$skill_name.md" <<EOF
+---
+description: "$desc"
+---
+Invoke the \`popovs:$skill_name\` skill.
+EOF
+    log_info "  command: popovs:$skill_name"
+    count=$((count + 1))
+  done
+
+  [[ $DRY_RUN -eq 0 ]] && log_ok "Generated $count popovs: command(s)"
+}
+
+_generate_popovs_commands
+
 log_ok "ai-settings installation complete."
