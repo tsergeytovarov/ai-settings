@@ -5,28 +5,36 @@
 
 ## [Unreleased]
 
+## [0.2.1] — 2026-04-19
+
 ### Добавлено
 - Раздел Compression в `docs/ai/style.md` — тёрсный стиль для ответов AI, не затрагивает генерируемый контент (коммиты, посты, docs).
 - Интеграция RTK (Rust Token Killer): PreToolUse hook `settings/hooks/rtk-rewrite.sh` сжимает вывод bash-команд на 60–90%; awareness-документ `docs/ai/rtk-awareness.md` с мета-командами и предупреждением про коллизию пакетов; автоустановка в `scripts/install.sh`.
 - Compact Instructions в `AGENTS.md` — директива для auto-compaction: что сохранять, что выбрасывать при сжатии контекста.
 - Windows-инструкции во всех setup-доках `docs/setup/` — пути, команды, установка зависимостей.
 - Проверка rtk-бинарника в `settings/hooks/session-start-reminder.sh` — предупреждение, если rtk не установлен.
-- Скилл `skills/popovs/boilerplate` — одна команда (`/popovs:boilerplate`) разворачивает новый проект: скачивает актуальный шаблон из публичного репо `tsergeytovarov/popovs-boilerplate`, подставляет плейсхолдеры, копирует снэпшот AI-правил, генерирует `docs/DEPLOY.md` с точными командами для VM, создаёт GitHub репо и делает начальный коммит. Поддерживает 4 стека: `nextjs-fastapi`, `fastapi-only`, `landing`, `docs`.
-- Репо `tsergeytovarov/popovs-boilerplate` (публичный) — рабочие шаблоны для всех четырёх стеков. Каждый стек верифицирован: docker-compose up поднимается, `/health` отдаёт 200, mkdocs build проходит, HTML валиден.
-- `scripts/deploy-skills.sh` — одна команда, которая разворачивает скиллы на все платформы: прогоняет `install.sh` (Claude Code + Codex + Gemini + Cursor), пакует скиллы в zip для Claude Desktop и **авто-синкает обновления** в уже загруженные скиллы через rsync прямо в `Library/Application Support/Claude/.../skills-plugin/.../skills/`. Режим щадящий (без `--delete`) — чужие файлы не трогаются. Первая загрузка всё ещё через UI (zip лежит в `dist/claude-desktop-skills/`), последующие апдейты — автоматически.
-- `docs/ai/writing-voice.md` — новый модуль голоса для всего **генерируемого контента**: коммиты, PR, CHANGELOG, TODO, документация, TG-посты, статьи. Явно прописано, где **не** применяется: UI-строки продукта, ошибки для конечных пользователей, формальная API-дока, чат-ответы мне (на них продолжает действовать `style.md`). Содержит правила: присутствие автора, разделение факта и мнения, гипербола как приём, ритм, стоп-лист канцелярита/инфобиза, жёсткое правило про кавычки, руководство по тону коммитов.
-- Скилл `skills/work/tg-post-writer` поднят до **1.1.0**:
-  - `references/style-guide.md` — полный стайл-гайд канала «··• Серёжа печатает» (голос, заходы, структура, ритм, лексика, кавычки, концовки, чек-лист из 11 пунктов).
-  - `references/examples.md` — 10 эталонных постов по жанрам.
-  - `SKILL.md` — добавлен блок required reading, форматы постов, жёсткие правила, вызов чек-листа перед возвратом.
 
 ### Изменено
-- `docs/ai/writing-voice.md` — сокращён с 6.8KB до ~3KB: убрано дублирование с tg-post-writer style-guide, раздел TG-постов переехал в `skills/popovs/tg-post-writer/references/style-guide.md`.
+- `docs/ai/writing-voice.md` — сокращён с 6.8KB до ~3KB: убрано дублирование с tg-post-writer style-guide.
 - `AGENTS.md` — `ml.md` вынесен из постоянной цепочки (загружать вручную для ML-проектов через `@./docs/ai/ml.md`); добавлен импорт `rtk-awareness.md`; добавлена секция Compact Instructions.
 - `settings/claude-settings.json` — добавлен PreToolUse hook для rtk-rewrite.
-- `scripts/install.sh` — Windows-детекция, автоустановка rtk при наличии cargo/brew.
-- `AGENTS.md` — добавлена секция **3. Writing Voice** с импортом `docs/ai/writing-voice.md`. Секции 3–13 переименованы в 4–14.
-- README — предупреждение о кастомизации перенесено **перед** блоком установки (раньше было под ним). Плюс прямой комментарий в bash-блоке между `git clone` и `./scripts/install.sh`. Чтобы точно прочитали до запуска, а не после.
+- `scripts/install.sh` — Windows-детекция; автоустановка rtk; авто-мерж `permissions` и `hooks` в существующий `~/.claude/settings.json` через jq.
+
+### Исправлено
+- `scripts/install.sh` — `_generate_skill_commands` больше не завершалась с exit 1 при `--dry-run`.
+
+## [0.2.0] — 2026-04-19
+
+### Добавлено
+- Скилл `skills/popovs/boilerplate` — одна команда (`/popovs:boilerplate`) разворачивает новый проект: скачивает актуальный шаблон из публичного репо `tsergeytovarov/popovs-boilerplate`, подставляет плейсхолдеры, копирует снэпшот AI-правил, генерирует `docs/DEPLOY.md` с точными командами для VM, создаёт GitHub репо и делает начальный коммит. Поддерживает 4 стека: `nextjs-fastapi`, `fastapi-only`, `landing`, `docs`.
+- Репо `tsergeytovarov/popovs-boilerplate` (публичный) — рабочие шаблоны для всех четырёх стеков. Каждый стек верифицирован: docker-compose up поднимается, `/health` отдаёт 200, mkdocs build проходит, HTML валиден.
+- `scripts/deploy-skills.sh` — одна команда разворачивает скиллы на все платформы: прогоняет `install.sh` (Claude Code + Codex + Gemini + Cursor), пакует скиллы в zip для Claude Desktop и **авто-синкает обновления** в уже загруженные скиллы через rsync. Режим щадящий (без `--delete`) — чужие файлы не трогаются. Первая загрузка через UI (zip в `dist/claude-desktop-skills/`), последующие апдейты — автоматически.
+- `docs/ai/writing-voice.md` — модуль голоса для всего **генерируемого контента**: коммиты, PR, CHANGELOG, TODO, документация, TG-посты, статьи. Явно прописано, где **не** применяется: UI-строки продукта, ошибки для конечных пользователей, формальная API-дока, чат-ответы (на них действует `style.md`). Содержит правила: присутствие автора, разделение факта и мнения, гипербола как приём, стоп-лист канцелярита/инфобиза, жёсткое правило про кавычки, руководство по тону коммитов.
+- Скилл `skills/popovs/tg-post-writer` поднят до **1.1.0**: полный стайл-гайд канала, 10 эталонных постов по жанрам, блок required reading и вызов чек-листа перед возвратом в `SKILL.md`.
+
+### Изменено
+- `AGENTS.md` — добавлена секция **3. Writing Voice** с импортом `docs/ai/writing-voice.md`. Секции сдвинуты.
+- README — предупреждение о кастомизации перенесено **перед** блоком установки.
 
 ## [0.1.2] — 2026-04-18
 
