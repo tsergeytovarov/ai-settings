@@ -25,28 +25,33 @@ Read both at least once per session. Do not copy phrases — reproduce logic, rh
 
 1. Read the input (idea, bullets, transcript, link).
 2. Determine the angle — a single clear thesis. If the input contains multiple ideas — ask the user which to focus on.
-3. Pick format based on material (see `style-guide.md` section 3):
+3. **Generate 3 opening hook variants** — one per genre, 1–2 sentences each:
+   - **А — провокация / гипербола:** резкое утверждение или намеренное преувеличение; сразу за ним — более взвешенный тезис.
+   - **Б — факт / сценарий:** конкретный факт или узнаваемый сценарий из жизни читателя — без абстракций.
+   - **В — вопрос / проблема:** вопрос, который читатель уже задаёт себе, или проблема, которую он узнаёт как свою.
+   Present all three and wait: "Какой хук берём — А, Б или В? Или дай свой вариант." Use the chosen hook as the opening line of the post.
+4. Pick format based on material (see `style-guide.md` section 3):
    - News + analysis (most common): facts → «Почему это важно?» pivot → 2–4 theses → personal take.
    - Thought / provocation: thesis opener → 3–5 short paragraphs → explicit position («Итак, мысль.»).
    - Short note / emotion: 1–2 lines, often self-ironic.
    - List: em-dash bullets, 3–5 items, one thought per item.
-4. Write with channel's rhythm:
+5. Write with channel's rhythm:
    - Mixed sentence length (short — long — medium, never uniform).
    - Paragraphs of 1–3 sentences.
    - Author present throughout («на мой взгляд», «я считаю», «кажется»).
    - Fact vs hypothesis explicitly marked.
-5. Format for Telegram:
+6. Format for Telegram:
    - Paragraphs separated by blank lines.
    - Markdown only in Telegram's supported subset (`**bold**`, `__italic__`, `` `code` ``, triple-backtick code blocks).
    - Em-dash (—) for pauses, not hyphens.
    - Emoji: zero in most posts. At most one as a closing intonation beat in explicitly playful context.
-6. Length (see `style-guide.md` section 7):
+7. Length (see `style-guide.md` section 7):
    - Short note: 20–100 chars.
    - News + take: 700–1500 chars.
    - Reflection / analysis: 1500–3000 chars.
    - Hard ceiling: ~3500 chars — above that, split into a series.
-7. Run the pre-send checklist (`style-guide.md` section 11) before returning. If any item fails — rewrite.
-8. **Cover image (опционально).** Если пост длиннее 100 символов — спроси пользователя: «Сгенерить обложку для поста?». Если да:
+8. Run the pre-send checklist (`style-guide.md` section 11) before returning. If any item fails — rewrite.
+9. **Cover image (опционально).** Если пост длиннее 100 символов — спроси пользователя: «Сгенерить обложку для поста?». Если да:
    - Сформулируй `cover_title` по правилам в секции "Cover title rules" ниже.
    - Покажи `cover_title` пользователю: «Обложка будет с заголовком: `<title>`. Так ок или поправить?». Пользователь может утвердить, попросить переделать или дать свой вариант.
    - После подтверждения вызови скрипт:
