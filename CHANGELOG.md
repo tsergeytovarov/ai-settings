@@ -6,6 +6,11 @@
 ## [Unreleased]
 
 ### Добавлено
+- Раздел Compression в `docs/ai/style.md` — тёрсный стиль для ответов AI, не затрагивает генерируемый контент (коммиты, посты, docs).
+- Интеграция RTK (Rust Token Killer): PreToolUse hook `settings/hooks/rtk-rewrite.sh` сжимает вывод bash-команд на 60–90%; awareness-документ `docs/ai/rtk-awareness.md` с мета-командами и предупреждением про коллизию пакетов; автоустановка в `scripts/install.sh`.
+- Compact Instructions в `AGENTS.md` — директива для auto-compaction: что сохранять, что выбрасывать при сжатии контекста.
+- Windows-инструкции во всех setup-доках `docs/setup/` — пути, команды, установка зависимостей.
+- Проверка rtk-бинарника в `settings/hooks/session-start-reminder.sh` — предупреждение, если rtk не установлен.
 - Скилл `skills/popovs/boilerplate` — одна команда (`/popovs:boilerplate`) разворачивает новый проект: скачивает актуальный шаблон из публичного репо `tsergeytovarov/popovs-boilerplate`, подставляет плейсхолдеры, копирует снэпшот AI-правил, генерирует `docs/DEPLOY.md` с точными командами для VM, создаёт GitHub репо и делает начальный коммит. Поддерживает 4 стека: `nextjs-fastapi`, `fastapi-only`, `landing`, `docs`.
 - Репо `tsergeytovarov/popovs-boilerplate` (публичный) — рабочие шаблоны для всех четырёх стеков. Каждый стек верифицирован: docker-compose up поднимается, `/health` отдаёт 200, mkdocs build проходит, HTML валиден.
 - `scripts/deploy-skills.sh` — одна команда, которая разворачивает скиллы на все платформы: прогоняет `install.sh` (Claude Code + Codex + Gemini + Cursor), пакует скиллы в zip для Claude Desktop и **авто-синкает обновления** в уже загруженные скиллы через rsync прямо в `Library/Application Support/Claude/.../skills-plugin/.../skills/`. Режим щадящий (без `--delete`) — чужие файлы не трогаются. Первая загрузка всё ещё через UI (zip лежит в `dist/claude-desktop-skills/`), последующие апдейты — автоматически.
@@ -16,6 +21,10 @@
   - `SKILL.md` — добавлен блок required reading, форматы постов, жёсткие правила, вызов чек-листа перед возвратом.
 
 ### Изменено
+- `docs/ai/writing-voice.md` — сокращён с 6.8KB до ~3KB: убрано дублирование с tg-post-writer style-guide, раздел TG-постов переехал в `skills/popovs/tg-post-writer/references/style-guide.md`.
+- `AGENTS.md` — `ml.md` вынесен из постоянной цепочки (загружать вручную для ML-проектов через `@./docs/ai/ml.md`); добавлен импорт `rtk-awareness.md`; добавлена секция Compact Instructions.
+- `settings/claude-settings.json` — добавлен PreToolUse hook для rtk-rewrite.
+- `scripts/install.sh` — Windows-детекция, автоустановка rtk при наличии cargo/brew.
 - `AGENTS.md` — добавлена секция **3. Writing Voice** с импортом `docs/ai/writing-voice.md`. Секции 3–13 переименованы в 4–14.
 - README — предупреждение о кастомизации перенесено **перед** блоком установки (раньше было под ним). Плюс прямой комментарий в bash-блоке между `git clone` и `./scripts/install.sh`. Чтобы точно прочитали до запуска, а не после.
 
