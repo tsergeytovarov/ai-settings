@@ -49,6 +49,9 @@
   "hooks": {
     "SessionStart": [
       { "type": "command", "command": "~/.claude/hooks/session-start-reminder.sh" }
+    ],
+    "PreToolUse": [
+      { "type": "command", "command": "~/.claude/hooks/rtk-rewrite.sh" }
     ]
   }
 }
