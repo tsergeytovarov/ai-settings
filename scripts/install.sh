@@ -158,7 +158,9 @@ EOF
       count=$((count + 1))
     done
 
-    [[ $DRY_RUN -eq 0 && $count -gt 0 ]] && log_ok "Generated $count command(s) for namespace '$ns'"
+    if [[ $DRY_RUN -eq 0 && $count -gt 0 ]]; then
+      log_ok "Generated $count command(s) for namespace '$ns'"
+    fi
   done
 }
 
