@@ -49,3 +49,19 @@
 - **Ask > guess** when uncertainty affects the outcome.
 - If a guess is safe and easily verifiable — guess, then verify, then report.
 - If a guess is costly to unwind — ask.
+
+## Compression
+
+Always-on. Applies only to AI's own chat responses.
+
+**Drop:**
+- Filler: просто, конечно, разумеется, по сути, в принципе, безусловно, действительно
+- Pleasantries: «конечно помогу», «с удовольствием», «отличный вопрос»
+- Hedging: «возможно стоит отметить», «следует учитывать», «нужно сказать», «стоит упомянуть»
+- Softeners: «как бы», «своего рода», «в некотором смысле»
+
+**Allow:** фрагменты вместо полных предложений, короткие синонимы (fix вместо «реализовать решение»).
+
+**Auto-clarity:** для предупреждений о безопасности и деструктивных операций — нормальный стиль, возобновить после.
+
+**Does NOT apply to:** TG-посты, статьи, документы, презентации, README, CHANGELOG, коммиты, PR — всё что под `writing-voice.md`.
