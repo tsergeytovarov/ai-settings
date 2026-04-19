@@ -55,7 +55,8 @@ else
   echo "[dry-run] ensure_symlink $AI_SETTINGS_ROOT/settings/hooks -> $HOME/.claude/hooks"
 fi
 
-# settings.json — copy, don't symlink (user may customize locally)
+# settings.json — merge managed keys (permissions, hooks, $schema) into existing file.
+# User-owned keys (enabledPlugins, extraKnownMarketplaces, etc.) are preserved.
 settings_target="$HOME/.claude/settings.json"
 settings_source="$AI_SETTINGS_ROOT/settings/claude-settings.json"
 if [[ ! -f "$settings_target" ]]; then
@@ -66,7 +67,20 @@ if [[ ! -f "$settings_target" ]]; then
     echo "[dry-run] cp $settings_source $settings_target"
   fi
 else
-  log_warn "Existing ~/.claude/settings.json — not overwriting. Diff with: diff $settings_source $settings_target"
+  log_info "Merging managed keys into ~/.claude/settings.json..."
+  if [[ $DRY_RUN -eq 0 ]]; then
+    if command -v jq &>/dev/null; then
+      tmp=$(mktemp)
+      jq --argjson tpl "$(cat "$settings_source")" \
+        '. * {"\$schema": $tpl["\$schema"], permissions: $tpl.permissions, hooks: $tpl.hooks}' \
+        "$settings_target" > "$tmp" && mv "$tmp" "$settings_target"
+      log_ok "settings.json updated (permissions + hooks merged)"
+    else
+      log_warn "jq not found — skipping merge. Install jq or manually copy: diff $settings_source $settings_target"
+    fi
+  else
+    echo "[dry-run] jq-merge permissions + hooks from $settings_source -> $settings_target"
+  fi
 fi
 
 # --- Codex CLI ---
