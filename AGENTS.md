@@ -76,6 +76,9 @@ Before any non-trivial task, check for a relevant skill or subagent.
 > Load on demand — only in ML/data projects. Reference: `docs/ai/ml.md`.
 > Read it manually when working on ML tasks: `@./docs/ai/ml.md`
 
+## 15. RTK (token-optimized bash output)
+@docs/ai/rtk-awareness.md
+
 ## Compact Instructions
 
 When context compaction runs, preserve:
