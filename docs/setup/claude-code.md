@@ -31,11 +31,10 @@ cd ~/ai-settings && git pull && ./scripts/install.sh
 ```
 
 Симлинки не трогаются — новое содержимое подхватывается автоматически.
-Файл `~/.claude/settings.json` (он копия, не симлинк) **не перетирается** — сравни вручную:
-
-```bash
-diff ~/.claude/settings.json ~/ai-settings/settings/claude-settings.json
-```
+`~/.claude/settings.json` обновляется автоматически: `install.sh` мержит
+секции `permissions`, `hooks` и `$schema` из шаблона через jq, сохраняя
+твои `enabledPlugins`, `extraKnownMarketplaces` и другие кастомные ключи.
+Требует `jq` (устанавливается через `brew install jq`).
 
 ## Проектные переопределения
 
@@ -54,6 +53,18 @@ diff ~/.claude/settings.json ~/ai-settings/settings/claude-settings.json
 
 - Глобальный слой применяется автоматически ко всем проектам через `~/.claude/CLAUDE.md` — не надо импортировать его из проектного `AGENTS.md`.
 - Если нужно временно «заглушить» хук в конкретной сессии: `AI_SETTINGS_QUIET=1 claude`.
+
+## Slash-команды для скиллов
+
+`install.sh` автоматически генерирует файлы в `~/.claude/commands/<namespace>/` — по одному на каждый скилл с `SKILL.md`. После установки скиллы появляются в `/`-автодополнении Claude Code:
+
+```
+/popovs:ru-commit-message
+/popovs:tg-post-writer
+...
+```
+
+Переименуй `skills/popovs/` → `skills/<your-handle>/` — команды подхватятся автоматически при следующем запуске `install.sh`.
 
 ## RTK (Rust Token Killer)
 

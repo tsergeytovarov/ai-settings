@@ -103,9 +103,9 @@ Uncertainty) — но не копируй содержание.
 
 ```
 Я переписываю docs/ai/writing-voice.md под свой стиль. Открой текущий файл
-для структуры (секции Scope / Core voice / Author presence / Fact vs opinion /
-Position / Hyperbole / Rhythm / Lexicon / Quotation marks / Emoji / Endings /
-Commit tone) — содержимое не копируй, там мой голос.
+для структуры (секции Scope / Core voice / Fact vs opinion / Lexicon /
+Quotation marks / Numbers and AI terminology / Emoji / Commit and PR tone /
+Reference) — содержимое не копируй, там мой голос.
 
 Задай мне 6 вопросов по одному:
 1. Опиши в трёх предложениях свой писательский голос. Представь, что
@@ -215,7 +215,7 @@ git, gh, yc). Открой файл для структуры (секции по
 
 ### 6. `docs/ai/python.md`, `docs/ai/typescript.md`, `docs/ai/ml.md`
 
-Языковые стандарты. Если не пишешь на Python — удали `python.md` и убери его `@import` из `AGENTS.md` секции 6. Аналогично для TypeScript и ML. Лучше меньше, чем левое.
+Языковые стандарты. Если не пишешь на Python — удали `python.md` и убери его `@import` из `AGENTS.md` секции 6. Аналогично для TypeScript. `ml.md` — особый случай: он уже вынесен из постоянной цепочки (load-on-demand), подключается вручную только в ML-проектах через `@./docs/ai/ml.md`. Лучше меньше, чем левое.
 
 **Промпт (адаптация одного модуля):**
 
