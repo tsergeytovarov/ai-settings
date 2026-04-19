@@ -72,4 +72,19 @@ Before any non-trivial task, check for a relevant skill or subagent.
 - Never invent APIs, flags, endpoints, or function signatures. If unsure — verify from docs or ask the user.
 
 ## 14. ML-Specific
-@docs/ai/ml.md
+
+> Load on demand — only in ML/data projects. Reference: `docs/ai/ml.md`.
+> Read it manually when working on ML tasks: `@./docs/ai/ml.md`
+
+## Compact Instructions
+
+When context compaction runs, preserve:
+- Current task state and what has been decided
+- File paths and line numbers of changes in progress
+- Any open questions or blockers
+- Hard gates and permission rules from `docs/ai/hard-gates.md`
+
+Summarize and discard:
+- Long tool output that has already been acted on
+- Earlier exploration steps that led to a dead end
+- Repeated content from multiple file reads
