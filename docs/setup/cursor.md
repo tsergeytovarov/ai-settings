@@ -52,3 +52,11 @@ Cursor подхватит новые правила при следующем о
 ```
 
 Проверяет, что все `@imports` резолвятся; ничего не пишет. Удобно прогонять локально перед коммитом.
+
+## Windows
+
+`sync-cursor.sh` требует bash (macOS/Linux или WSL).
+
+**WSL (рекомендуется):** запустить `./scripts/install.sh` или `./scripts/sync-cursor.sh --global` из WSL-терминала.
+
+**Без WSL (вручную):** скопировать `.cursor/rules/ai-settings.mdc` в директорию правил Cursor вручную.

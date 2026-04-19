@@ -43,3 +43,17 @@ cd ~/ai-settings && git pull
 > «напиши коммит»
 
 Если модель предлагает Conventional Commits с русским описанием (`feat(scope): ...`) и не ломает персону Бориса — правила подхвачены. Если выдаёт generic английский — значит плоский файл не прогрузился; проверь `head ~/.codex/AGENTS.md` и перегенерируй через `sync-cursor.sh --codex`.
+
+## Windows
+
+`install.sh` требует bash (macOS/Linux или WSL).
+
+**WSL (рекомендуется):** запустить `./scripts/install.sh` из WSL-терминала.
+
+**Без WSL (вручную):**
+```powershell
+# В PowerShell:
+Copy-Item "AGENTS.md" "$env:USERPROFILE\.codex\AGENTS.md"
+```
+
+> Путь на Windows: `%USERPROFILE%\.codex\AGENTS.md`

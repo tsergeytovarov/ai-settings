@@ -26,3 +26,15 @@ cd ~/ai-settings && git pull
 ```
 
 Симлинк остаётся валидным. Перезапусти Gemini-сессию, чтобы подтянулись новые правила.
+
+## Windows
+
+**WSL (рекомендуется):** запустить `./scripts/install.sh` — GEMINI.md симлинкуется автоматически.
+
+**Без WSL (вручную):**
+```powershell
+# В PowerShell:
+New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.gemini\GEMINI.md" -Target "$PWD\GEMINI.md"
+```
+
+> Путь на Windows: `%USERPROFILE%\.gemini\GEMINI.md`
