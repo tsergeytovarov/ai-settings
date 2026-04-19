@@ -87,6 +87,51 @@ Always-on. Applies only to AI's own chat responses.
 
 ---
 
+### 5. Интеграция rtk (Rust Token Killer)
+
+rtk — CLI-прокси, сжимает вывод bash-команд перед попаданием в контекст (input токены). Экономия 60-90% на `git`, `npm test`, `pytest`, `grep` и др. Работает только для Bash tool calls; Read/Grep/Glob не затрагивает.
+
+**Механизм:** `PreToolUse` hook перехватывает команды, прозрачно переписывает (`git status` → `rtk git status`). Hook молча выходит с exit 0 если rtk не установлен — безопасно pre-wire до установки бинарника.
+
+**`scripts/install.sh`** — добавить секцию rtk:
+- macOS + brew → `brew install rtk` автоматически
+- macOS без brew / Linux → `curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh` автоматически
+- Windows → напечатать инструкцию, не падать (бинарник с releases + PATH)
+
+**`rtk init -g` не нужен** — мы pre-wire всё сами:
+
+- `settings/hooks/rtk-rewrite.sh` — скопировать из `hooks/claude/rtk-rewrite.sh` rtk репо. Уже будет в `~/.claude/hooks/` через существующий симлинк.
+- `settings/claude-settings.json` — добавить `PreToolUse` hook: `{ "type": "command", "command": "~/.claude/hooks/rtk-rewrite.sh" }`.
+- `docs/ai/rtk-awareness.md` — создать (~10 строк): мета-команды rtk (`rtk gain`, `rtk discover`, `rtk proxy`), warning про name collision с Rust Type Kit. Добавить `@./docs/ai/rtk-awareness.md` в AGENTS.md — подхватят Claude и Gemini.
+- `settings/hooks/session-start-reminder.sh` — добавить проверку: если `~/.claude/hooks/rtk-rewrite.sh` существует, но `rtk` не в PATH → предупреждение с командой установки.
+
+**`docs/setup/claude-code.md`** — добавить секцию RTK: что pre-wired автоматически, что нужно вручную (только бинарник), как проверить (`rtk --version`, `rtk gain`).
+
+---
+
+### 6. Windows: покрытие во всех setup-доках
+
+Текущее состояние: нигде нет упоминания Windows. Все скрипты bash-only.
+
+**Стратегия:** WSL — основной рекомендуемый путь для Windows. Нативный bash через Git Bash/MSYS2 — fallback с ограничениями.
+
+**`scripts/install.sh`** — добавить Windows-детекцию в начало: если `OSTYPE` указывает на Windows без WSL → выводить понятное сообщение с ссылкой на ручные шаги, завершать с exit 1.
+
+**`docs/setup/claude-code.md`** — добавить секцию Windows:
+- Рекомендация: WSL → запустить `./scripts/install.sh` как обычно
+- Без WSL: ручные шаги (создать симлинки через `mklink`, скопировать `claude-settings.json`)
+- rtk на Windows: скачать бинарник из releases, добавить в PATH
+
+**`docs/setup/gemini.md`** — добавить: путь на Windows `%USERPROFILE%\.gemini\GEMINI.md`; без WSL — скопировать GEMINI.md вручную.
+
+**`docs/setup/cursor.md`** — добавить: `sync-cursor.sh` требует WSL или Git Bash; без него — скопировать `.cursor/rules/ai-settings.mdc` вручную.
+
+**`docs/setup/codex.md`** — добавить: `install.sh` требует WSL; без него — скопировать `~/.codex/AGENTS.md` вручную (или `%USERPROFILE%\.codex\AGENTS.md`).
+
+**`docs/setup/customization.md`** — добавить примечание в начало: все bash-команды требуют macOS/Linux или WSL на Windows.
+
+---
+
 ## Что НЕ меняем
 
 - `docs/ai/style.md` — всё кроме нового раздела Compression
@@ -103,4 +148,18 @@ Always-on. Applies only to AI's own chat responses.
 2. Верифицировать имя ключа авто-компакта → обновить `~/.claude/settings.json`
 3. Убрать `ml.md` из `AGENTS.md`, добавить комментарий
 4. Сократить `writing-voice.md`
-5. Обновить CHANGELOG и TODO
+5. Интеграция rtk:
+   a. Скопировать `rtk-rewrite.sh` в `settings/hooks/`
+   b. Добавить `PreToolUse` hook в `settings/claude-settings.json`
+   c. Создать `docs/ai/rtk-awareness.md`, добавить импорт в `AGENTS.md`
+   d. Добавить rtk-проверку в `session-start-reminder.sh`
+   e. Добавить rtk-установку в `scripts/install.sh`
+   f. Обновить `docs/setup/claude-code.md` — секция RTK
+6. Windows-покрытие:
+   a. `scripts/install.sh` — Windows-детекция
+   b. `docs/setup/claude-code.md` — секция Windows
+   c. `docs/setup/gemini.md` — Windows-пути
+   d. `docs/setup/cursor.md` — Windows-примечание
+   e. `docs/setup/codex.md` — Windows-примечание
+   f. `docs/setup/customization.md` — Windows-примечание в начало
+7. Обновить CHANGELOG и TODO
