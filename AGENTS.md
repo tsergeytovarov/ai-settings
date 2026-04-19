@@ -79,6 +79,26 @@ Before any non-trivial task, check for a relevant skill or subagent.
 ## 15. RTK (token-optimized bash output)
 @./docs/ai/rtk-awareness.md
 
+## Codex Skills
+
+Codex does not natively discover project-local Claude skills from `.claude/skills/`.
+
+If a requested skill is not in the current Codex skill list, but a matching file exists at
+`.claude/skills/<skill-name>/SKILL.md`, treat that file as project workflow documentation:
+read it and follow it manually, but do not claim the skill is installed.
+
+If this workflow should become a real Codex skill, install it under:
+
+`~/.agents/skills/<skill-name>/SKILL.md`
+
+A symlink is preferred over copying, so the repo remains the source of truth.
+
+After installing a skill, restart Codex.
+
+Do not assume Claude command namespaces carry over to Codex.
+Example: Claude command `popovs:write-meridian-article` maps to a Codex personal skill
+named `write-meridian-article`, not `popovs:write-meridian-article`.
+
 ## Compact Instructions
 
 When context compaction runs, preserve:

@@ -83,6 +83,33 @@ else
   fi
 fi
 
+# --- Codex personal skills (~/.agents/skills/) ---
+# Codex discovers personal skills from ~/.agents/skills/<skill-name>/SKILL.md.
+# Symlink each skill from the repo so the repo stays source of truth.
+# Namespace prefix is dropped: popovs:write-meridian-article → write-meridian-article.
+log_info "Setting up Codex personal skills (~/.agents/skills/)..."
+if [[ $DRY_RUN -eq 0 ]]; then
+  ensure_dir "$HOME/.agents/skills"
+  for ns_dir in "$AI_SETTINGS_ROOT/skills"/*/; do
+    [[ -d "$ns_dir" ]] || continue
+    for skill_dir in "$ns_dir"*/; do
+      [[ -f "$skill_dir/SKILL.md" ]] || continue
+      skill_name="$(basename "$skill_dir")"
+      target="$HOME/.agents/skills/$skill_name"
+      ensure_symlink "$skill_dir" "$target"
+    done
+  done
+else
+  for ns_dir in "$AI_SETTINGS_ROOT/skills"/*/; do
+    [[ -d "$ns_dir" ]] || continue
+    for skill_dir in "$ns_dir"*/; do
+      [[ -f "$skill_dir/SKILL.md" ]] || continue
+      skill_name="$(basename "$skill_dir")"
+      echo "[dry-run] ensure_symlink $skill_dir -> $HOME/.agents/skills/$skill_name"
+    done
+  done
+fi
+
 # --- Codex CLI ---
 # Codex не резолвит @imports в AGENTS.md, поэтому кладём плоскую версию с
 # развёрнутыми импортами. Не симлинк, а обычный файл — иначе Codex будет
