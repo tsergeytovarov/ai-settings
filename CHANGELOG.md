@@ -5,6 +5,12 @@
 
 ## [Unreleased]
 
+## [0.2.2] — 2026-04-20
+
+### Добавлено
+- Секция `## Codex Skills` в `AGENTS.md` — объясняет модели, что скиллы из `.claude/skills/` не видны Codex нативно; как использовать их вручную и как устанавливать в `~/.agents/skills/`; предупреждение про namespace (`popovs:write-meridian-article` → `write-meridian-article`).
+- `scripts/install.sh` — новая секция: создаёт `~/.agents/skills/` и симлинкует каждый скилл из репо без namespace-префикса. Идемпотентно, работает с `--dry-run`.
+
 ## [0.2.1] — 2026-04-19
 
 ### Добавлено
