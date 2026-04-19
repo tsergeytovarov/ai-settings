@@ -19,4 +19,5 @@
 
 ## Сделано
 
+- [x] Скилл `popovs:boilerplate` и публичный репо шаблонов `tsergeytovarov/popovs-boilerplate` — план [`docs/superpowers/plans/2026-04-19-popovs-boilerplate.md`](docs/superpowers/plans/2026-04-19-popovs-boilerplate.md) (2026-04-19).
 - [x] Имплементация по плану [`docs/superpowers/plans/2026-04-18-ai-settings-implementation.md`](docs/superpowers/plans/2026-04-18-ai-settings-implementation.md) — релиз v0.1.0 (2026-04-18).
