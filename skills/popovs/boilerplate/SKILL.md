@@ -95,8 +95,24 @@ cp $AI_SETTINGS/CLAUDE.md ./CLAUDE.md
 mkdir -p .claude
 cp $AI_SETTINGS/.claude/settings.local.json ./.claude/settings.json
 
-# Generate .claude/CLAUDE.md with MCP guard
+# Generate .claude/CLAUDE.md with model hints and MCP guard
 cat > .claude/CLAUDE.md << 'EOF'
+## Подсказки по модели и усилию
+
+В конце каждого ответа, где предлагается следующий шаг или запускается задача, добавляй подсказку формата:
+
+> 💡 *Для этого подойдёт **[модель]** + **[effort]***
+
+Маппинг:
+- **Haiku** — поиск по кодовой базе, explore-агенты, bash-команды, саммари, простые правки. Effort: не нужен.
+- **Sonnet** — большинство задач: коммиты, PR, объяснения, скилы, планирование, рефакторинг. Effort: medium (по умолчанию).
+- **Opus** — архитектурные решения, глубокий code review, дизайн-ревью, сложный дебаг, длинный контекст, ресёрч. Effort: high или xhigh.
+
+Effort уровни: `low` / `medium` / `high` / `xhigh` — переключаются командой `/effort`.
+Модель — командой `/model`.
+
+Подсказку давай кратко, одной строкой, только когда уместно.
+
 ## MCP-серверы
 
 Не вызывай инструменты MCP-серверов (Notion, Confluence, Claude_in_Chrome, scheduled-tasks) без явной просьбы пользователя.
