@@ -94,6 +94,13 @@ cp $AI_SETTINGS/CLAUDE.md ./CLAUDE.md
 # Claude Code settings
 mkdir -p .claude
 cp $AI_SETTINGS/.claude/settings.local.json ./.claude/settings.json
+
+# Generate .claude/CLAUDE.md with MCP guard
+cat > .claude/CLAUDE.md << 'EOF'
+## MCP-серверы
+
+Не вызывай инструменты MCP-серверов (Notion, Confluence, Claude_in_Chrome, scheduled-tasks) без явной просьбы пользователя.
+EOF
 ```
 
 ## Step 6: Generate docs/DEPLOY.md

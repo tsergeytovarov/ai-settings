@@ -12,6 +12,10 @@
 - Before complex work: check the session's skill list; if there is even a 1% chance a skill matches — invoke it (per `superpowers:using-superpowers`).
 - `Write` and `Edit` require a prior `Read` of the target file — don't try to edit blind.
 
+## MCP-серверы
+
+Не вызывай инструменты MCP-серверов (Notion, Confluence, Claude_in_Chrome, scheduled-tasks) без явной просьбы пользователя.
+
 ## Session hooks
 
 The `SessionStart` hook at `~/.claude/hooks/session-start-reminder.sh` prints a short summary of available skills and subagents at the start of each session.
