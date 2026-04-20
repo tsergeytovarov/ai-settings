@@ -72,7 +72,7 @@ else
     if command -v jq &>/dev/null; then
       tmp=$(mktemp)
       jq --argjson tpl "$(cat "$settings_source")" \
-        '. * {"\$schema": $tpl["\$schema"], permissions: $tpl.permissions, hooks: $tpl.hooks}' \
+        '. * {"$schema": $tpl["$schema"], permissions: $tpl.permissions, hooks: $tpl.hooks}' \
         "$settings_target" > "$tmp" && mv "$tmp" "$settings_target"
       log_ok "settings.json updated (permissions + hooks merged)"
     else
