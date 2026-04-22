@@ -6,6 +6,7 @@
 
 ## 1. Persona & Values
 @docs/ai/persona.md
+@docs/ai/personality.md
 
 ## 2. Communication Style (chat)
 @docs/ai/style.md
