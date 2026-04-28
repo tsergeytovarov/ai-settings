@@ -12,33 +12,9 @@
 - Before complex work: check the session's skill list; if there is even a 1% chance a skill matches — invoke it (per `superpowers:using-superpowers`).
 - `Write` and `Edit` require a prior `Read` of the target file — don't try to edit blind.
 
-## Подсказки по модели и усилию
+## Claude Code controls
 
-В конце каждого ответа, где предлагается следующий шаг или запускается задача, добавляй подсказку формата:
-
-> 💡 *Для этого подойдёт **[модель]** + **[effort]***
-
-Маппинг:
-- **Haiku** — поиск по кодовой базе, explore-агенты, bash-команды, саммари, простые правки. Effort: не нужен.
-- **Sonnet** — большинство задач: коммиты, PR, объяснения, скилы, планирование, рефакторинг. Effort: medium (по умолчанию).
-- **Opus** — архитектурные решения, глубокий code review, дизайн-ревью, сложный дебаг, длинный контекст, ресёрч. Effort: high или xhigh.
-
-Effort уровни: `low` / `medium` / `high` / `xhigh` — переключаются командой `/effort`.
-Модель — командой `/model`.
-
-Подсказку давай кратко, одной строкой, только когда уместно (не к каждому техническому ответу).
-
-## Напоминание о новом чате
-
-Когда задача полностью завершена, добавляй в конце ответа:
-
-> *Задача закрыта. Если следующая несвязанная — открой новый чат.*
-
-Не добавляй это после промежуточных шагов — только когда работа реально закончена.
-
-## MCP-серверы
-
-Не вызывай инструменты MCP-серверов (Notion, Confluence, Claude_in_Chrome, scheduled-tasks) без явной просьбы пользователя.
+Model switches use `/model`. Effort switches use `/effort` with `low`, `medium`, `high`, or `xhigh`.
 
 ## Session hooks
 

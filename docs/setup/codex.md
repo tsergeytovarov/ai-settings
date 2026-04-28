@@ -30,11 +30,38 @@ cd ~/ai-settings && git pull
 
 `~/.codex/config.toml` **не трогается** установщиком — там твои настройки модели, плагинов, trusted projects. В репе эталона больше нет — было фиктивное содержимое, удалено в v0.1.1.
 
-## Нюанс: скиллы и субагенты
+## Скиллы
 
-У Codex нет нативной системы скиллов и субагентов как у Claude Code. Но плоский `AGENTS.md` содержит ссылки на `agents/*/AGENT.md` и `skills/*/SKILL.md` в репе — модель может имитировать роли при ручном запросе:
+`install.sh` создаёт симлинки личных скиллов в `~/.agents/skills/<skill-name>/`.
+Codex читает их как personal skills после перезапуска приложения.
+
+Проверка:
+
+```bash
+find -L ~/.agents/skills -maxdepth 2 -name SKILL.md -print
+```
+
+Если добавил или переименовал скилл в `skills/`, запусти:
+
+```bash
+~/ai-settings/scripts/install.sh
+```
+
+Потом перезапусти Codex. Без перезапуска список скиллов может остаться старым.
+
+## Субагенты
+
+У Codex нет такой же системы субагентов, как у Claude Code. Но плоский `AGENTS.md` содержит ссылки на `agents/*/AGENT.md` в репе — модель может имитировать роли при ручном запросе:
 
 > «ты сейчас code-reviewer, проверь этот diff по правилам из `~/ai-settings/agents/code-reviewer/AGENT.md`»
+
+## Что глобально применено к Codex
+
+После `install.sh` Codex получает:
+
+- плоский `~/.codex/AGENTS.md` со всеми правилами общения, персоной Бориса, hard gates, git workflow и platform-wide notes;
+- personal skills из `~/.agents/skills/`;
+- текущий `~/.codex/config.toml` остаётся пользовательским: модель, плагины и trusted projects не перезаписываются.
 
 ## Проверка
 

@@ -62,25 +62,60 @@ Language-specific:
 Before any non-trivial task, check for a relevant skill or subagent.
 - If there is even a 1% chance a skill applies — invoke it first.
 - Never mention a skill without actually calling it.
-- For specialized work (code review, debugging, FastAPI, Next.js, ML, PR writing) — prefer the corresponding subagent from `~/.claude/agents/` (see also `./agents/` in this repo).
+- For specialized work (code review, debugging, FastAPI, Next.js, ML, PR writing) — prefer the corresponding subagent or role instructions when the platform supports them. Claude Code uses `~/.claude/agents/`; Codex should use the available skill list, `~/.agents/skills/`, and the role docs in `./agents/`.
 - Subagents should run with a fresh, curated context. Never pass arbitrary conversation history — brief them explicitly.
 
-## 13. Uncertainty & Hallucination
+## 13. Platform-Wide Operating Notes
+
+These rules are global. Platform-specific wrappers may add details, but should not be the only place where the behavior is defined.
+
+## Model and effort hints
+
+At the end of responses where you propose a next step or start a task, add a short model/effort hint when the current platform exposes such controls.
+
+Claude mapping:
+- Haiku — codebase search, explorer agents, bash commands, summaries, simple edits.
+- Sonnet — most work: commits, PRs, explanations, skills, planning, refactoring. Effort: medium.
+- Opus — architecture, deep code review, design review, hard debugging, long context, research. Effort: high or xhigh.
+
+Codex mapping:
+- gpt-5.4-mini — simple searches, summaries, small mechanical edits.
+- gpt-5.4 — everyday coding, docs, tests, small refactors.
+- gpt-5.5 — architecture, hard debugging, code review, long-context work. Effort: high or xhigh for complex tasks.
+
+Do not add the hint to every technical answer. One short line is enough when it helps.
+
+## Completion reminder
+
+When a task is fully complete, end with:
+
+> *Задача закрыта. Если следующая несвязанная — открой новый чат.*
+
+Do not add it after intermediate progress updates.
+
+## External tools and MCP
+
+Do not call MCP servers, connectors, browser automation for external targets, or scheduled-task tools without an explicit user request. This includes Notion, Confluence, Claude_in_Chrome, scheduled tasks, and similar private or side-effect-capable integrations.
+
+## 14. Uncertainty & Hallucination
 
 - Prefer **asking** to guessing when uncertainty affects the outcome.
 - **"I don't know"** is a valid, preferred answer over a plausible-sounding guess.
 - For non-trivial decisions — offer **2–3 options with tradeoffs** plus a recommendation.
 - Never invent APIs, flags, endpoints, or function signatures. If unsure — verify from docs or ask the user.
 
-## 14. ML-Specific
+## 15. ML-Specific
 
 > Load on demand — only in ML/data projects. Reference: `docs/ai/ml.md`.
 > Read it manually when working on ML tasks: `@./docs/ai/ml.md`
 
-## 15. RTK (token-optimized bash output)
+## 16. RTK (token-optimized bash output)
 @./docs/ai/rtk-awareness.md
 
 ## Codex Skills
+
+Codex personal skills are installed under `~/.agents/skills/<skill-name>/SKILL.md`.
+Run `scripts/install.sh` after changing `skills/` so symlinks stay current, then restart Codex so the app refreshes its skill list.
 
 Codex does not natively discover project-local Claude skills from `.claude/skills/`.
 
