@@ -60,8 +60,23 @@ find -L ~/.agents/skills -maxdepth 2 -name SKILL.md -print
 После `install.sh` Codex получает:
 
 - плоский `~/.codex/AGENTS.md` со всеми правилами общения, персоной Бориса, hard gates, git workflow и platform-wide notes;
+- обязательный repository preflight перед чтением или изменением предметного кода;
 - personal skills из `~/.agents/skills/`;
 - текущий `~/.codex/config.toml` остаётся пользовательским: модель, плагины и trusted projects не перезаписываются.
+
+## Preflight перед предметной работой
+
+Codex сначала определяет текущий `project_id` и все связанные
+`repository_id`, затем запускает `hq-repo-sync preflight`. При возобновлении
+приостановленной задачи preflight запускается заново: старый отчёт не
+переиспользуется.
+
+Предметную работу можно начинать только после кода выхода `0`. Ненулевой код
+— blocker: Codex показывает его и останавливается. Отдельное подтверждение не
+нужно только для автоматического clone отсутствующего checkout,
+`fetch --all --prune` и `pull --ff-only`. Commit, создание ветки, merge,
+rebase, reset, push, force push, изменение remote или credentials требуют
+отдельного решения.
 
 ## Проверка
 
