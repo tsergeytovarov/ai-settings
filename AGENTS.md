@@ -39,7 +39,6 @@ Language-specific:
 
 ## 7. Git Workflow
 @docs/ai/git-workflow.md
-@docs/ai/repository-sync.md
 
 ## 8. Docs Discipline
 
