@@ -69,7 +69,8 @@ git pull
 [`skills/superpowers/`](skills/superpowers/). В ней тесты, ревью и субагенты
 масштабируются по риску изменения, а не запускаются полным набором для каждой
 задачи. Если Codex уже использует plugin Superpowers, `install.sh` не создаёт
-вторую персональную копию этих skills.
+вторую персональную копию этих skills. Для Claude Code upstream plugin нужно
+отключить: fork уже доступен через `~/.claude/skills`.
 
 ## Скиллы в Claude Desktop
 

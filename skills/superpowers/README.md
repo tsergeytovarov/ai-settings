@@ -15,6 +15,8 @@
 ## Установка
 
 - Claude Code читает namespace через глобальный симлинк `~/.claude/skills`.
+  Upstream plugin `superpowers@superpowers-marketplace` должен быть отключён,
+  иначе Claude Code покажет обе версии skills.
 - Codex получает personal skills, только если plugin Superpowers не установлен.
   Это защищает от двух копий одного набора и списка из почти 30 дублей.
 - Claude Desktop получает zip и обновления через `scripts/deploy-skills.sh`.

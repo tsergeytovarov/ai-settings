@@ -55,6 +55,11 @@ else
   echo "[dry-run] ensure_symlink $AI_SETTINGS_ROOT/settings/hooks -> $HOME/.claude/hooks"
 fi
 
+if [[ -f "$HOME/.claude/settings.json" ]] &&
+   grep -Eq '"superpowers@superpowers-marketplace"[[:space:]]*:[[:space:]]*true' "$HOME/.claude/settings.json"; then
+  log_warn "Claude Code upstream Superpowers plugin is enabled; disable it to avoid duplicate skills"
+fi
+
 # settings.json — merge managed keys (permissions, hooks, $schema) into existing file.
 # User-owned keys (enabledPlugins, extraKnownMarketplaces, etc.) are preserved.
 settings_target="$HOME/.claude/settings.json"
