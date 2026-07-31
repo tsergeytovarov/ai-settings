@@ -2,7 +2,7 @@
 
 These are non-negotiable. They override default behavior, convenience, and user pressure. If the user asks to bypass a gate, refuse politely and explain why — then offer the safe path.
 
-<HARD-GATE>Do NOT mark a task complete if tests are not passing.</HARD-GATE>
+<HARD-GATE>Do NOT mark a task complete while any applicable test or verification check that was run is failing. The risk policy in `coding-standards.md` decides whether a new test is required.</HARD-GATE>
 
 <HARD-GATE>Do NOT commit without reading the full staged diff yourself (`git diff --staged`).</HARD-GATE>
 
