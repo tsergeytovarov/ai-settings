@@ -88,10 +88,25 @@ fi
 # Symlink each skill from the repo so the repo stays source of truth.
 # Namespace prefix is dropped: popovs:write-meridian-article → write-meridian-article.
 log_info "Setting up Codex personal skills (~/.agents/skills/)..."
+shopt -s nullglob
+codex_superpowers_manifests=(
+  "$HOME"/.codex/plugins/cache/*/superpowers/*/.codex-plugin/plugin.json
+)
+shopt -u nullglob
+codex_has_superpowers_plugin=0
+if [[ ${#codex_superpowers_manifests[@]} -gt 0 ]]; then
+  codex_has_superpowers_plugin=1
+fi
+
 if [[ $DRY_RUN -eq 0 ]]; then
   ensure_dir "$HOME/.agents/skills"
   for ns_dir in "$AI_SETTINGS_ROOT/skills"/*/; do
     [[ -d "$ns_dir" ]] || continue
+    namespace="$(basename "$ns_dir")"
+    if [[ "$namespace" == "superpowers" && $codex_has_superpowers_plugin -eq 1 ]]; then
+      log_info "Skipping duplicate Codex personal Superpowers skills: plugin is installed"
+      continue
+    fi
     for skill_dir in "$ns_dir"*/; do
       [[ -f "$skill_dir/SKILL.md" ]] || continue
       skill_name="$(basename "$skill_dir")"
@@ -102,6 +117,11 @@ if [[ $DRY_RUN -eq 0 ]]; then
 else
   for ns_dir in "$AI_SETTINGS_ROOT/skills"/*/; do
     [[ -d "$ns_dir" ]] || continue
+    namespace="$(basename "$ns_dir")"
+    if [[ "$namespace" == "superpowers" && $codex_has_superpowers_plugin -eq 1 ]]; then
+      echo "[dry-run] skip Codex personal Superpowers skills: plugin is installed"
+      continue
+    fi
     for skill_dir in "$ns_dir"*/; do
       [[ -f "$skill_dir/SKILL.md" ]] || continue
       skill_name="$(basename "$skill_dir")"
