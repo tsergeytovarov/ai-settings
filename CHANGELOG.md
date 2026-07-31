@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+### Исправлено
+- `install.sh` теперь создаёт `~/.gemini/AGENTS.md` для относительного импорта
+  из `GEMINI.md` и подключает risk-based Superpowers через
+  `~/.gemini/skills`.
+
 ## [0.2.5] — 2026-07-31
 
 ### Изменено

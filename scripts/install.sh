@@ -153,9 +153,13 @@ log_info "Setting up Gemini CLI..."
 if [[ $DRY_RUN -eq 0 ]]; then
   ensure_dir "$HOME/.gemini"
   ensure_symlink "$AI_SETTINGS_ROOT/GEMINI.md" "$HOME/.gemini/GEMINI.md"
+  ensure_symlink "$AI_SETTINGS_ROOT/AGENTS.md" "$HOME/.gemini/AGENTS.md"
+  ensure_symlink "$AI_SETTINGS_ROOT/skills/superpowers" "$HOME/.gemini/skills"
 else
   echo "[dry-run] ensure_dir $HOME/.gemini"
   echo "[dry-run] ensure_symlink $AI_SETTINGS_ROOT/GEMINI.md -> $HOME/.gemini/GEMINI.md"
+  echo "[dry-run] ensure_symlink $AI_SETTINGS_ROOT/AGENTS.md -> $HOME/.gemini/AGENTS.md"
+  echo "[dry-run] ensure_symlink $AI_SETTINGS_ROOT/skills/superpowers -> $HOME/.gemini/skills"
 fi
 
 # --- Cursor (generate flat rules file) ---
