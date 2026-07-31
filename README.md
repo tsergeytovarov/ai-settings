@@ -63,6 +63,15 @@ git pull
 
 Симлинки не пересоздаются — новое содержимое подхватывается автоматически.
 
+## Risk-based Superpowers
+
+Репозиторий содержит собственную версию Superpowers в
+[`skills/superpowers/`](skills/superpowers/). В ней тесты, ревью и субагенты
+масштабируются по риску изменения, а не запускаются полным набором для каждой
+задачи. Если Codex уже использует plugin Superpowers, `install.sh` не создаёт
+вторую персональную копию этих skills. Для Claude Code upstream plugin нужно
+отключить: fork уже доступен через `~/.claude/skills`.
+
 ## Скиллы в Claude Desktop
 
 Claude Desktop не читает `~/.claude/skills/` (это канал Claude Code CLI). Нативного watched-folder у него тоже нет — скиллы добавляются только через Upload в Settings. Но после первой загрузки Desktop разворачивает скилл в открытую папку в `Library/Application Support/Claude/...`, куда можно класть обновления напрямую. На этом построена схема `deploy-skills.sh`:

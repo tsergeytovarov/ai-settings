@@ -6,11 +6,54 @@ Language-agnostic principles. Applies to all code. Language-specific rules live 
 
 Do not add functionality "for the future". Build only what the current task needs. Extract abstractions when there are **three** concrete use cases, not before.
 
-## Tests required
+## Risk-based verification
 
-- New logic → new tests. No exceptions.
-- Bug fix → regression test that would have caught the bug. Write the test **first** (it fails), then the fix (it passes).
-- You may not mark a task done if tests are failing.
+Classify the change before deciding whether to add tests. Risk, not the mere
+presence of changed code, determines the verification budget.
+
+### Low risk
+
+Examples: documentation, copy, styling, static markup, configuration values,
+generated files, and mechanical wiring with no new branching or data
+transformation.
+
+- Do not add tests by default.
+- Run only the cheapest applicable existing check: lint, type-check, build, or
+  a focused smoke check.
+
+### Medium risk
+
+Examples: ordinary business logic, handlers, component behaviour, parsing, and
+data transformation where failure is bounded and reversible.
+
+- Add a test only for a key observable outcome, a non-obvious branch, or a
+  regression that would otherwise be hard to notice.
+- Prefer one behaviour test through a public seam over tests for every helper,
+  branch, or implementation detail.
+- Run the closest affected test target once after the change. Run broader
+  existing tests only when the changed code is shared by them.
+
+### High risk
+
+Examples: a reproduced bug; authentication or authorization; money, personal
+data, destructive operations, migrations, concurrency, production incidents,
+or a public contract used by other systems.
+
+- A minimal regression or contract test is required and is written first.
+- Test the critical behaviour through the highest practical public seam.
+- Run the affected suite. Run the full suite only when shared core behaviour
+  changed, before a release, or when the user explicitly asks.
+
+### Test budget
+
+- Do not create a test per function, private method, trivial branch, or static
+  rendering detail.
+- Do not duplicate coverage already provided by a higher-level test.
+- Do not make reviewers rerun passing tests without a concrete doubt that the
+  recorded run does not answer.
+- Any applicable test or check that was run must pass before completion. If no
+  new test is warranted, state which existing check or smoke path verified the
+  change.
 
 ## No dead code
 

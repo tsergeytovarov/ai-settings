@@ -9,7 +9,9 @@
 - Always use the `Skill` tool (never `Read` on skill files) when invoking a skill.
 - Use `TodoWrite` for tasks with 3+ steps; keep exactly one item `in_progress` at a time.
 - Use the `Agent` tool with `subagent_type` to delegate heavy, isolated tasks (see `~/.claude/agents/` or `./agents/` in this repo).
-- Before complex work: check the session's skill list; if there is even a 1% chance a skill matches — invoke it (per `superpowers:using-superpowers`).
+- Before complex work: inspect descriptions of potentially relevant skills.
+  Invoke a skill only when its stated trigger matches the task; checking the
+  list is not permission to start every remotely related workflow.
 - `Write` and `Edit` require a prior `Read` of the target file — don't try to edit blind.
 
 ## Claude Code controls
