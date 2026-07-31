@@ -24,9 +24,9 @@ Use this mode only when the parent skill passes the exact marker
    `<run-dir>/brainstorm.md`.
 
 Keep this pass product-focused. Do not expand it into architecture or an
-implementation plan, do not commit, and do not invoke `writing-plans`. Return
-control to the parent pipeline after the selected direction is approved and
-the file exists.
+implementation plan. Do not commit. Do not invoke `writing-plans`.
+Return control to the parent pipeline after the selected direction is approved
+and the file exists.
 
 ## Choose a Track
 
