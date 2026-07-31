@@ -60,9 +60,20 @@ Language-specific:
 ## 12. Skill & Agent Invocation Discipline
 
 Before any non-trivial task, check for a relevant skill or subagent.
-- If there is even a 1% chance a skill applies — invoke it first.
+- If there is even a 1% chance a skill applies, inspect its description first.
+  Invoke it only when its stated trigger matches the task; checking
+  applicability is not permission to start the workflow.
 - Never mention a skill without actually calling it.
-- For specialized work (code review, debugging, FastAPI, Next.js, ML, PR writing) — prefer the corresponding subagent or role instructions when the platform supports them. Claude Code uses `~/.claude/agents/`; Codex should use the available skill list, `~/.agents/skills/`, and the role docs in `./agents/`.
+- Use the risk classification in `docs/ai/coding-standards.md` to scale test and
+  review effort. It overrides a skill's blanket demand for per-function tests,
+  per-task reviewers, repeated full-suite runs, or unbounded re-review loops.
+- Use subagents when the user explicitly requests delegation, when independent
+  work can run in parallel, or for one independent review of a high-risk or
+  cross-boundary change. Low- and medium-risk implementation stays in the
+  current agent with self-review.
+- For specialized work (debugging, FastAPI, Next.js, ML, PR writing), prefer the
+  corresponding skill or role instructions. A specialized topic alone does not
+  justify a subagent.
 - Subagents should run with a fresh, curated context. Never pass arbitrary conversation history — brief them explicitly.
 
 ## 13. Platform-Wide Operating Notes

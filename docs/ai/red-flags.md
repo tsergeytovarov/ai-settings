@@ -12,7 +12,8 @@ When any of these thoughts appears, **STOP** and reconsider. The pattern you're 
 | "I'll use `any` in TS just this once" | Gateway to silent type erosion | `unknown` + narrowing, or proper type; justify in a comment if truly unavoidable |
 | "I'll put this side effect in useEffect without deps" | Infinite loops or stale closures | Correct deps array; prefer `useMemo`/`useCallback` or restructure |
 | "Diff is 800+ lines, whatever" | Unreviewable, risky merge | Split the PR into logical chunks |
-| "I'll skip the test this once" | Untested code will hit prod | Write the test first (TDD); at minimum, write it after |
+| "Every changed function needs its own test" | Test volume becomes a proxy for confidence and couples the suite to implementation details | Classify risk; test only critical behaviour, non-obvious outcomes, and regressions through a public seam |
+| "This is high-risk, but a smoke check is enough" | Auth, money, data, migrations, and incident fixes can fail silently or irreversibly | Write the minimal regression or contract test first |
 | "I'll use `--force` / `--no-verify`" | Silent destruction, bypasses safety | Fix the underlying issue |
 | "I'll `rm -rf` this real quick" | One typo away from deleting wrong thing | `ls` the target first; use `trash` utility when available |
 | "I'll catch and silently log the error" | Production fires become invisible | Log + re-raise, or handle meaningfully; never swallow |

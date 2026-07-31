@@ -19,6 +19,9 @@
 
 ## Сделано
 
+- [x] Риск-ориентированная политика тестов и ревью: критические контракты
+  защищаются тестами, обычные правки не обрастают тестами и субагентскими
+  циклами по умолчанию (2026-07-31).
 - [x] Token-savings план (2026-04-19) — RTK-интеграция, Compression в style.md, Compact Instructions в AGENTS.md, Windows-инструкции в setup-доках, сокращение writing-voice.md.
 - [x] Скилл `popovs:boilerplate` и публичный репо шаблонов `tsergeytovarov/popovs-boilerplate` — план [`docs/superpowers/plans/2026-04-19-popovs-boilerplate.md`](docs/superpowers/plans/2026-04-19-popovs-boilerplate.md) (2026-04-19).
 - [x] Имплементация по плану [`docs/superpowers/plans/2026-04-18-ai-settings-implementation.md`](docs/superpowers/plans/2026-04-18-ai-settings-implementation.md) — релиз v0.1.0 (2026-04-18).
