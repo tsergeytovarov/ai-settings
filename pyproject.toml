@@ -1,6 +1,6 @@
 [project]
 name = "ai-settings"
-version = "0.1.0"
+version = "0.2.5"
 description = "Centralized AI settings library (Claude Code, Codex, Cursor, Gemini)"
 requires-python = ">=3.12"
 
