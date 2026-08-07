@@ -10,6 +10,8 @@ Applies to all Python code. Builds on top of `coding-standards.md`.
 
 - **uv** is preferred over pip when possible. Faster, reproducible, handles lockfiles.
 - `uv venv` to create, `uv pip install -e ".[dev]"` to install in editable mode.
+- uv is the **installer**, not the runner. Execute project code with
+  `.venv/bin/python`, never `uv run` — see the cache caveat in `commands.md`.
 - Single source of truth for deps: `pyproject.toml`. Avoid `requirements.txt` unless required by external tooling.
 
 ## Type hints

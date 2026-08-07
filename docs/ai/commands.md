@@ -11,10 +11,21 @@ READ THIS FIRST. These are the canonical commands for common tasks. Prefer these
 - Stop on first failure: `pytest -v -x`
 - Install deps (preferred): `uv pip install -e ".[dev]"`
 - Create venv: `uv venv && source .venv/bin/activate`
-- Run a script in venv: `uv run python script.py`
-- Run a CLI in venv: `uv run <cli-command>`
+- Sync from lockfile: `uv sync --frozen`
+- Run a script in venv: `.venv/bin/python script.py`
+- Run a CLI in venv: `.venv/bin/<cli-command>`
 - Lint: `ruff check .`
 - Format: `ruff format .` (or `black .`)
+
+**Do not run project code through `uv run`.** uv initializes its cache on every
+invocation — including `--frozen` — and dies with `Permission denied` wherever
+`~/.cache/uv` is read-only: agent sandboxes and cron. The failure surfaces as a
+made-up problem with the task ("calendar unavailable", "monitoring failed")
+instead of a tooling error. Call the venv interpreter directly; it never touches
+the cache. uv stays the installer, run once outside the sandbox.
+
+If `.venv/bin/python` is missing, create the environment (`uv sync --frozen` or
+`uv venv`) — do not fall back to `uv run`, and do not ask to disable the sandbox.
 
 ## JavaScript / TypeScript (npm)
 
