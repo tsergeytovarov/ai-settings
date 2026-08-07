@@ -23,6 +23,8 @@
   защищаются тестами, обычные правки не обрастают тестами и субагентскими
   циклами по умолчанию; fork Superpowers хранится в репозитории и не
   дублируется в Codex поверх plugin (2026-07-31).
+- [x] Глобальная установка оригинального `brainstorming` из Superpowers v6.1.1 (2026-07-20).
+- [x] Глобальный `$spec`: анализ проекта, brainstorming, выбранные исследования отдельными агентами, grilling, межмодельная проверка и 2 независимых ревью (2026-07-20).
 - [x] Token-savings план (2026-04-19) — RTK-интеграция, Compression в style.md, Compact Instructions в AGENTS.md, Windows-инструкции в setup-доках, сокращение writing-voice.md.
 - [x] Скилл `popovs:boilerplate` и публичный репо шаблонов `tsergeytovarov/popovs-boilerplate` — план [`docs/superpowers/plans/2026-04-19-popovs-boilerplate.md`](docs/superpowers/plans/2026-04-19-popovs-boilerplate.md) (2026-04-19).
 - [x] Имплементация по плану [`docs/superpowers/plans/2026-04-18-ai-settings-implementation.md`](docs/superpowers/plans/2026-04-18-ai-settings-implementation.md) — релиз v0.1.0 (2026-04-18).

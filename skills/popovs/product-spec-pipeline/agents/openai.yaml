@@ -1,0 +1,4 @@
+interface:
+  display_name: "Product Spec Pipeline"
+  short_description: "Brainstorm and refine reviewed product specs"
+  default_prompt: "Use $product-spec-pipeline to turn this idea or product task into a reviewed product specification."

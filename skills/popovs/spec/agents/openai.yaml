@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec"
+  short_description: "Run the reviewed product spec pipeline"
+  default_prompt: "Use $spec to turn this idea or product task into a reviewed product specification."
