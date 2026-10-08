@@ -1,0 +1,7 @@
+{
+  "name": "context-weather",
+  "version": "0.5.0",
+  "description": "Прогноз погоды над строкой ввода: чем полнее контекстное окно, тем хуже погода",
+  "author": { "name": "Сергей Попов" },
+  "types": "./types/index.d.ts"
+}

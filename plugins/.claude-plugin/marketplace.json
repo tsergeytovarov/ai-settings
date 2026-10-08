@@ -1,0 +1,11 @@
+{
+  "name": "popovs-plugins",
+  "owner": { "name": "Сергей Попов" },
+  "plugins": [
+    {
+      "name": "context-weather",
+      "source": "./context-weather",
+      "description": "Прогноз погоды над строкой ввода: чем полнее контекстное окно, тем хуже погода"
+    }
+  ]
+}
