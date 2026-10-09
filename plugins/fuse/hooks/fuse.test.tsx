@@ -26,6 +26,12 @@ const CAUGHT: Array<[string, string]> = [
   ['kubectl delete pod api-1', 'cloud-delete'],
   ["clickhouse-client -q 'DROP TABLE events'", 'sql-destructive'],
   ['psql -c "DELETE FROM users;"', 'sql-destructive'],
+  // The command that slipped through on 10.10: rtk in front, git's -C before the subcommand.
+  ['rtk proxy git -C "$D" branch -D fuse-demo', 'git-branch-delete'],
+  ['rtk git push --force origin main', 'git-force-push'],
+  ['git -c core.pager=cat --no-pager reset --hard HEAD', 'git-reset-hard'],
+  ["git -C '/repo with space' clean -fd", 'git-clean'],
+  ['rtk proxy rm -rf ~/work/project', 'rm-recursive'],
 ]
 
 // The command the first version stopped by mistake: `rm -rf` was only text in a heredoc.
@@ -54,6 +60,9 @@ const SAFE = [
   'psql -c "DELETE FROM users WHERE id = 1;"',
   'cat notes.sql | grep "DROP TABLE"',
   'echo sudoku',
+  'rtk git status',
+  'rtk proxy git -C "$D" branch -vv',
+  'git -C repo log --oneline',
 ]
 
 describe('что ловится', () => {
@@ -65,6 +74,14 @@ describe('что ловится', () => {
     const danger = bash('cd repo && rm -rf build "old src"', 'Чищу сборку перед релизом')
     expect(danger?.targets).toEqual(['build', 'old', 'src'])
     expect(danger?.why).toBe('Чищу сборку перед релизом')
+  })
+
+  test('описание всей команды, не про удаление, — не объяснение', () => {
+    // The 10.10 case: the description summed up the line and never named the rm.
+    const danger = bash('rm -r shtab/demo-light && cat > notes.md', 'Add README, check ё, git status')
+    expect(danger?.rule).toBe('rm-recursive')
+    expect(danger?.why).toBeUndefined()
+    expect(bash('git branch -D old', 'Remove the merged branch')?.why).toBe('Remove the merged branch')
   })
 
   test('MCP: удаление, массовые правки, SQL, посты, письма, доступ', () => {

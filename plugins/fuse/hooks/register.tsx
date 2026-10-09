@@ -197,16 +197,24 @@ export const register: Register = on => {
     const { Box, Text } = $.ui.resolve(e)
     const others = drawnBeneath(rest)
     const card = (
-      <Box key="fuse-card" flexDirection="column" borderStyle="round" borderColor="error" paddingX={1} marginBottom={1}>
+      // Full width: in a band that wraps (context-weather's) the card takes a line of its own.
+      <Box
+        key="fuse-card"
+        flexDirection="column"
+        borderStyle="round"
+        borderColor="error"
+        paddingX={1}
+        marginBottom={1}
+        width="100%"
+        minWidth={0}
+      >
         <Text bold color="error">
           ⛔ Опасно: команда {waiting.what}
         </Text>
-        {waiting.why === null ? null : (
-          <Text wrap="wrap">
-            <Text dimColor>Зачем: </Text>
-            {waiting.why}
-          </Text>
-        )}
+        <Text wrap="wrap">
+          <Text dimColor>Зачем: </Text>
+          {waiting.why ?? <Text dimColor>модель не объяснила</Text>}
+        </Text>
         {waiting.targets.map(target => (
           <Text wrap="truncate-end">
             <Text color="error">• </Text>

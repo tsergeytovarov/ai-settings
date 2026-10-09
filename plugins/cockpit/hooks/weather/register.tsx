@@ -96,21 +96,20 @@ export const register: Register = on => {
       )
     })
 
+    // Weather and limits never shrink. What the plugins beneath drew follows them:
+    // small buttons stay at the right end, a full-width card (the fuse's) wraps onto
+    // a line of its own instead of squeezing the weather to nothing.
     return (
-      <Box flexDirection="row" justifyContent="space-between" alignItems="center" width="100%">
-        <Box flexDirection="row" alignItems="center" gap={1} flexShrink={1} minWidth={0}>
+      <Box flexDirection="row" flexWrap="wrap" alignItems="center" gap={1} width="100%">
+        <Box flexDirection="row" alignItems="center" gap={1} flexGrow={1} flexShrink={0}>
           {icon}
-          {current.percent === undefined ? null : (
-            <Text color={weather.color} wrap="truncate-end">
-              {bar(current.percent, BAR_CELLS)}
-            </Text>
-          )}
+          {current.percent === undefined ? null : <Text color={weather.color}>{bar(current.percent, BAR_CELLS)}</Text>}
           <Text color={weather.color}>{percent}</Text>
         </Box>
         <Box flexDirection="row" alignItems="center" gap={2} flexShrink={0}>
           {buddies}
-          {drawnBeneath(rest)}
         </Box>
+        {drawnBeneath(rest)}
       </Box>
     )
   })

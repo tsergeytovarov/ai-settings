@@ -39,13 +39,13 @@ export const register: Register = on => {
     )
     const others = drawnBeneath(rest)
     if (others === null) return button
+    // Side by side, not glued into one row: the weather's band wraps, so the button
+    // stays on its line and a full-width card (the fuse's) takes a line of its own.
     return (
-      <Box flexDirection="row" alignItems="center" gap={1} width="100%">
-        <Box flexGrow={1} flexShrink={1} minWidth={0}>
-          {others}
-        </Box>
+      <>
         {button}
-      </Box>
+        {others}
+      </>
     )
   })
 }

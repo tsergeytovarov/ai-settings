@@ -23,6 +23,10 @@ type Rule = {
   id: string
   kind: Kind
   check: (tool: string, input: Record<string, unknown>) => Found | null
+  // Words a description must touch to explain this danger. A Bash description
+  // often sums up the whole compound line («Add README, git status») and says
+  // nothing of the rm in it: then the fuse says the reason is missing.
+  about?: RegExp
 }
 
 const DETAIL_LIMIT = 300
@@ -43,6 +47,15 @@ const SCRATCH = /^(\/private)?\/tmp\/|\/scratchpad\//
 // Quoted text: '…' or "…" with escapes.
 const QUOTED = /(["'])(?:\\.|(?!\1)[^\\])*\1/g
 
+// Leading env assignments and wrappers that run the next word; `rtk` and
+// `rtk proxy` run the command after them too.
+const WRAPPERS = /^(?:\w+=\S*\s+)*(?:(?:time|nohup|exec|command|env|rtk(?:\s+proxy)?|xargs(?:\s+-\S+)*)\s+)*/
+
+// Git's own options before the subcommand: `git -C "$dir" -c k=v --no-pager branch -D x`
+// is `git branch -D x` to the rules. Each group: -C with its path (quoted or not),
+// -c with its setting, a long option with an optional =value, or -P.
+const GIT_GLOBALS = /^git((?:\s+(?:-C\s+(?:"[^"]*"|'[^']*'|\S+)|-c\s+\S+|--[\w-]+(?:=\S+)?|-P))+)(?=\s)/
+
 // The commands a shell line runs, each from its first word. Heredoc bodies are
 // dropped and quoted text loses its separators, so a dangerous word inside a
 // message, a commit text or a script fed through `<<EOF` is not a command.
@@ -51,20 +64,21 @@ export function commandsOf(line: string): string[] {
   const flattened = withoutHeredocs.replace(QUOTED, quoted => quoted.replace(/[;&|\n]/g, ' '))
   return flattened
     .split(/&&|\|\||[;|\n]/)
-    .map(part =>
-      part
-        .trim()
-        // Leading env assignments and wrappers that run the next word.
-        .replace(/^(?:\w+=\S*\s+)*(?:(?:time|nohup|exec|command|env|xargs(?:\s+-\S+)*)\s+)*/, ''),
-    )
+    .map(part => part.trim().replace(WRAPPERS, '').replace(GIT_GLOBALS, 'git'))
     .filter(part => part !== '')
 }
 
 // A Bash rule: `pattern` is tried on each command from its first word.
-function bash(id: string, pattern: RegExp, what: (match: RegExpMatchArray) => Omit<Found, 'detail'> | null): Rule {
+function bash(
+  id: string,
+  pattern: RegExp,
+  about: RegExp,
+  what: (match: RegExpMatchArray) => Omit<Found, 'detail'> | null,
+): Rule {
   return {
     id,
     kind: 'destructive',
+    about,
     check: (tool, input) => {
       const cmd = command(tool, input)
       if (cmd === null) return null
@@ -96,8 +110,17 @@ function mcpServer(tool: string): string {
   return match?.[1] ?? tool
 }
 
+const REMOVING = /удал|снес|снос|стер|стир|чист|чищ|убра|убер|clean|delet|remov|wipe|purge|\brm\b/i
+const FORCE_PUSH = /push|пуш|forc|перезапис|истори|rebase|amend/i
+const DISCARDING = /reset|сброс|откат|отмен|discard|restor|revert|верн|выбро/i
+const BRANCHES = /ветк|branch|удал|delet|remov|чист|чищ|clean/i
+const INSTALLING = /install|установ|скрипт|script|setup/i
+const SUPERUSER = /sudo|прав|админ|root|install|установ|систем/i
+const CLOUD = /удал|снес|delet|remov|uninstall|destroy|откат|rollback/i
+const DATA = /удал|delet|drop|truncat|чист|чищ|clean|очист|сброс|reset|миграц|migrat/i
+
 export const RULES: readonly Rule[] = [
-  bash('rm-recursive', /^(?:sudo\s+)?rm\s+((?:-\S+(?:\s+|$))*)(.*)$/, match => {
+  bash('rm-recursive', /^(?:sudo\s+)?rm\s+((?:-\S+(?:\s+|$))*)(.*)$/, REMOVING, match => {
     if (!/(^|\s)(-[a-zA-Z]*[rR][a-zA-Z]*|--recursive)(\s|$)/.test(match[1] ?? '')) return null
     const targets = (match[2] ?? '')
       .trim()
@@ -107,16 +130,17 @@ export const RULES: readonly Rule[] = [
     if (targets.length > 0 && targets.every(t => SCRATCH.test(t))) return null
     return { what: 'удалит без корзины', targets }
   }),
-  bash('git-force-push', /^git\s+push\b.*\s(?:--force(?:-with-lease)?|-f)\b/, () => ({
+  bash('git-force-push', /^git\s+push\b.*\s(?:--force(?:-with-lease)?|-f)\b/, FORCE_PUSH, () => ({
     what: 'перезапишет историю ветки на сервере — чужие коммиты могут пропасть',
   })),
-  bash('git-reset-hard', /^git\s+reset\b.*--hard\b/, () => ({ what: 'сотрёт все незакоммиченные изменения' })),
-  bash('git-clean', /^git\s+clean\b.*\s-[a-zA-Z]*f/, () => ({ what: 'удалит все неотслеживаемые файлы — их не вернуть' })),
-  bash('git-discard', /^git\s+(?:checkout\s+--\s|restore\s+(?!--staged)[^-])/, () => ({ what: 'откатит правки, которых нет в коммитах' })),
-  bash('git-branch-delete', /^git\s+branch\b.*\s-D\b/, () => ({ what: 'удалит ветку, даже если она не влита' })),
+  bash('git-reset-hard', /^git\s+reset\b.*--hard\b/, DISCARDING, () => ({ what: 'сотрёт все незакоммиченные изменения' })),
+  bash('git-clean', /^git\s+clean\b.*\s-[a-zA-Z]*f/, REMOVING, () => ({ what: 'удалит все неотслеживаемые файлы — их не вернуть' })),
+  bash('git-discard', /^git\s+(?:checkout\s+--\s|restore\s+(?!--staged)[^-])/, DISCARDING, () => ({ what: 'откатит правки, которых нет в коммитах' })),
+  bash('git-branch-delete', /^git\s+branch\b.*\s-D\b/, BRANCHES, () => ({ what: 'удалит ветку, даже если она не влита' })),
   {
     id: 'pipe-to-shell',
     kind: 'destructive',
+    about: INSTALLING,
     check: (tool, input) => {
       const cmd = command(tool, input)
       if (cmd === null) return null
@@ -126,11 +150,12 @@ export const RULES: readonly Rule[] = [
         : null
     },
   },
-  bash('sudo', /^sudo\s/, () => ({ what: 'выполнит команду с правами администратора' })),
-  bash('cloud-delete', /^(?:kubectl|helm|yc)\b.*\b(?:delete|uninstall|destroy)\b/, () => ({ what: 'удалит ресурс в облаке или кластере' })),
+  bash('sudo', /^sudo\s/, SUPERUSER, () => ({ what: 'выполнит команду с правами администратора' })),
+  bash('cloud-delete', /^(?:kubectl|helm|yc)\b.*\b(?:delete|uninstall|destroy)\b/, CLOUD, () => ({ what: 'удалит ресурс в облаке или кластере' })),
   {
     id: 'sql-destructive',
     kind: 'destructive',
+    about: DATA,
     check: (tool, input) => {
       const cmd = command(tool, input)
       if (cmd === null || !DESTRUCTIVE_SQL.test(cmd)) return null
@@ -199,10 +224,13 @@ export const RULES: readonly Rule[] = [
 
 export function findDanger(tool: string, input: unknown): Danger | null {
   const fields = typeof input === 'object' && input !== null ? (input as Record<string, unknown>) : {}
-  const why = typeof fields.description === 'string' && fields.description.trim() !== '' ? fields.description.trim() : undefined
+  const described = typeof fields.description === 'string' ? fields.description.trim() : ''
   for (const rule of RULES) {
     const found = rule.check(tool, fields)
-    if (found !== null) return { rule: rule.id, kind: rule.kind, ...found, ...(why === undefined ? {} : { why }) }
+    if (found === null) continue
+    // A description that never touches this danger does not explain it.
+    const explains = described !== '' && (rule.about === undefined || rule.about.test(described))
+    return { rule: rule.id, kind: rule.kind, ...found, ...(explains ? { why: described } : {}) }
   }
   return null
 }
