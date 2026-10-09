@@ -15,6 +15,7 @@ export const RUN = 'Выполнить'
 export const RUN_ALWAYS = 'Разрешать до конца сессии'
 export const STOP = 'Запретить'
 export const HEADER = '⛔ Опасно'
+export const ALARM = 'sounds/alarm.wav'
 
 // Folders a walk counts before it stops and says «больше».
 const WALK_LIMIT = 3000
@@ -113,6 +114,10 @@ async function ask($: EngineInterface, danger: Danger): Promise<string> {
     why: danger.why ?? null,
     targets,
   }))
+  // Not awaited: the question opens while the alarm plays.
+  $.audio.play({ asset: ALARM }).catch(error => {
+    $.ui.log(`fuse: alarm did not play: ${error instanceof Error ? error.message : String(error)}`, { to: 'debug' })
+  })
   try {
     return await $.ui.ask(question, { options: [RUN, RUN_ALWAYS, STOP], header: HEADER })
   } finally {

@@ -3,7 +3,7 @@ import { describe, expect, test } from 'claude-code/testing'
 import type { On } from 'claude-code'
 import type { Engine } from 'claude-code/testing'
 
-import { RUN, RUN_ALWAYS, STOP } from './register'
+import { ALARM, RUN, RUN_ALWAYS, STOP } from './register'
 import { commandsOf, findDanger } from './rules'
 
 const bash = (command: string, description?: string) => findDanger('Bash', { command, description })
@@ -104,13 +104,17 @@ const BAND = {
   view: {},
 }
 
-type Seen = { ran: string[]; asked: string[]; card: string[]; options: Array<Record<string, unknown>> }
+type Seen = { ran: string[]; asked: string[]; card: string[]; options: Array<Record<string, unknown>>; played: string[] }
 
 // The engine beneath: tools run, the dialog answers `answer`, the disk holds a
 // `build` folder with two files. While the question is open, it looks at the
 // band and at the dialog as the fuse rewrites it.
 function standInForEngine(test$: Engine, on: On, answer: string | null): Seen {
-  const seen: Seen = { ran: [], asked: [], card: [], options: [] }
+  const seen: Seen = { ran: [], asked: [], card: [], options: [], played: [] }
+  on('audio.play', (_$, e) => {
+    if (e.clip.asset !== undefined) seen.played.push(e.clip.asset)
+    return { value: undefined }
+  })
   on('fs.stat', () => ({ value: { kind: 'dir', size: 0, mtimeMs: 0, isLink: false } }) as never)
   on('fs.list', (_$, e) =>
     (String((e as { path?: string }).path).endsWith('build')
@@ -156,6 +160,7 @@ test('вопрос, красная карточка и подписи в диа�
   expect(run.description).toBe('Зачем: Чищу старую сборку')
   expect(String(run.preview)).toContain('rm -rf build')
   expect(String(run.preview)).toContain('build — папка: 2 файла')
+  expect(seen.played).toEqual([ALARM])
   expect(seen.ran).toEqual(['Bash'])
 })
 
@@ -214,4 +219,5 @@ test('в автозадаче разрушительное запрещено б
   await $.tool.call({ tool: 'mcp__mattermost__mattermost_post_create', tool_use_id: 't3', message: 'Итог дня' } as never)
   expect(seen.ran).toEqual(['mcp__mattermost__mattermost_post_create'])
   expect(seen.asked.length).toBe(0)
+  expect(seen.played).toEqual([])
 })
