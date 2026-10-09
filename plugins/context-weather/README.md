@@ -51,3 +51,7 @@ claude plugin install context-weather@popovs-plugins
 - `hooks/claude.ts` — персонаж с кольцом, цвета и настроения.
 - `hooks/register.tsx` — хуки и отрисовка полосы.
 - Проверка: `claude plugin validate .` и `claude plugin test .`
+
+## В составе cockpit
+
+Код этого плагина входит в общий плагин `cockpit`. После правки здесь запусти `python3 cockpit/scripts/sync.py` из папки `plugins`.

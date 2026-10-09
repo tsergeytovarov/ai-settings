@@ -20,8 +20,10 @@ export const ALARM = 'sounds/alarm.wav'
 // Folders a walk counts before it stops and says «больше».
 const WALK_LIMIT = 3000
 
-// Module state: the home folder, for `~` in a command (the engine does not expand it).
-let home: string | undefined
+// The home folder, for `~` in a command (the engine does not expand it).
+function homeOf(cwd: string): string | undefined {
+  return /^(\/Users\/[^/]+|\/home\/[^/]+)/.exec(cwd)?.[1]
+}
 
 // What an rm would take with it: per path, whether it is there, and for a
 // folder how many files and bytes lie under it (counted up to a limit).
@@ -105,7 +107,8 @@ function questionFor(danger: Danger, targets: TargetInfo[]): string {
 }
 
 async function ask($: EngineInterface, danger: Danger): Promise<string> {
-  const targets = danger.targets === undefined ? [] : await describeTargets($, danger.targets, home, WALK_LIMIT)
+  const targets =
+    danger.targets === undefined ? [] : await describeTargets($, danger.targets, homeOf(await $.session.cwd()), WALK_LIMIT)
   const question = questionFor(danger, targets)
   await update($, pending, () => ({
     question,
@@ -125,12 +128,9 @@ async function ask($: EngineInterface, danger: Danger): Promise<string> {
   }
 }
 
+// No session.start hook: cockpit bundles this module with context-weather's, and
+// one plugin may hook an event only once without a matcher.
 export const register: Register = on => {
-  on('session.start', async ($, e, next) => {
-    home = /^(\/Users\/[^/]+|\/home\/[^/]+)/.exec(e.cwd)?.[1]
-    return next(e)
-  })
-
   // A scheduled task opens with its own marker: nobody is there to answer.
   on('prompt.submit', async ($, e, next) => {
     if (e.text.startsWith('<scheduled-task')) await update($, isUnattended, () => true)

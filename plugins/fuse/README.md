@@ -64,3 +64,7 @@ claude plugin install fuse@popovs-plugins
 - `hooks/targets.ts` — как описать путь: файл, папка, сколько файлов и мегабайт.
 - Аргументы вызова лежат в самом событии `tool.call` рядом с `tool` (`e.command`), а не в `e.input`.
 - Проверка: `claude plugin validate .` и `claude plugin test .`
+
+## В составе cockpit
+
+Код этого плагина входит в общий плагин `cockpit`. После правки здесь запусти `python3 cockpit/scripts/sync.py` из папки `plugins`.

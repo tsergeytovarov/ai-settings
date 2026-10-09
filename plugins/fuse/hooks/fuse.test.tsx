@@ -115,6 +115,7 @@ function standInForEngine(test$: Engine, on: On, answer: string | null): Seen {
     if (e.clip.asset !== undefined) seen.played.push(e.clip.asset)
     return { value: undefined }
   })
+  on('session.cwd', () => ({ value: '/Users/x/work' }) as never)
   on('fs.stat', () => ({ value: { kind: 'dir', size: 0, mtimeMs: 0, isLink: false } }) as never)
   on('fs.list', (_$, e) =>
     (String((e as { path?: string }).path).endsWith('build')
