@@ -1,11 +1,18 @@
 {
   "name": "popovs-plugins",
-  "owner": { "name": "Сергей Попов" },
+  "owner": {
+    "name": "Сергей Попов"
+  },
   "plugins": [
     {
       "name": "context-weather",
       "source": "./context-weather",
       "description": "Прогноз погоды над строкой ввода: чем полнее контекстное окно, тем хуже погода"
+    },
+    {
+      "name": "chat-memory",
+      "source": "./chat-memory",
+      "description": "Боковая панель с памятью чата и цифрами сессии, кнопки «Память» и «Сжать» над строкой ввода; память сжимает Haiku по кнопке и перед компактом"
     }
   ]
 }
