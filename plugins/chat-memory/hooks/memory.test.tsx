@@ -186,6 +186,37 @@ test('«🗜 Сжать» сжимает и до этого обновляет �
   await band.unmount()
 })
 
+test('если прямой компакт отказал, «🗜 Сжать» ставит /compact в очередь с памятью', async ($, on) => {
+  standInForEngine(on)
+  on('session.compact', () => {
+    throw new Error('a turn is running')
+  })
+  let queued: { command: string; args: string } | undefined
+  on('command.run', (_$, e) => {
+    queued = { command: e.command, args: e.args }
+    return { text: '' }
+  })
+
+  const band = await $.ui.mount({ plugin: 'chat-memory', surface: 'desktop', component: 'AbovePrompt', props: BAND_PROPS })
+  await band.press({ key: 'memory-compact' })
+  expect(queued?.command).toBe('compact')
+  expect(queued?.args).toContain('Таймер в десктопе')
+  await band.unmount()
+})
+
+test('память не задваивается, если /compact уже несёт её', async ($, on) => {
+  standInForEngine(on)
+  let instructions: string | undefined
+  on('session.compact', (_$, e) => {
+    instructions = e.instructions
+    return { messages: [{ role: 'user', text: 'сводка', toolUses: [] }] }
+  })
+
+  const carried = compactInstructions(MEMORY, undefined)
+  await $.session.compact({ trigger: 'manual', instructions: carried, messages: MESSAGES } as never)
+  expect(instructions).toBe(carried)
+})
+
 test('перед /compact память уходит в инструкции', async ($, on) => {
   standInForEngine(on)
   let instructions: string | undefined

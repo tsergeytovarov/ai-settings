@@ -60,23 +60,39 @@ async function refresh($: EngineInterface, messages?: readonly SessionMessage[])
   }
 }
 
+function reasonOf(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
+
 // The button's compaction. The engine skips the calling plugin's own
 // session.compact hook, so this does what that hook does for /compact.
 async function compactNow($: EngineInterface): Promise<void> {
   await refresh($)
   const current = await read($, memory)
+  const instructions = current === null ? '' : compactInstructions(current, undefined)
   try {
-    const result = await $.session.compact(current === null ? {} : { instructions: compactInstructions(current, undefined) })
+    const result = await $.session.compact(instructions === '' ? {} : { instructions })
     if (result.messages === undefined) {
       $.ui.toast(`Сжатие отменено: ${result.skip}`)
       return
     }
     const kept = result.messages.length
     await update($, status, s => ({ ...s, cursor: kept }))
-  } catch {
-    $.ui.toast('Сжать чат можно только между ответами')
+  } catch (direct) {
+    // The direct call refuses while the engine counts a turn as running, and a
+    // button press may count as one. /compact as a command waits for the session
+    // to go idle and runs then, the memory passed along as its instructions.
+    $.ui.log(`chat-memory: $.session.compact refused: ${reasonOf(direct)}`, { to: 'debug' })
+    try {
+      await $.command.run({ command: 'compact', args: instructions })
+    } catch (queued) {
+      $.ui.toast(`Сжать не вышло: ${reasonOf(queued)}`)
+    }
   }
 }
+
+// Instructions this plugin already wrote: a /compact the button queued carries them.
+const KEPT_MARK = 'Обязательно сохрани в сводке:'
 
 // `next(e)` answers `{ type: 'engine' }` when nothing beneath drew: the engine's
 // own band, which may only stand alone, never inside another tree.
@@ -104,9 +120,8 @@ export const register: Register = on => {
 
     await refresh($, e.messages)
     const current = await read($, memory)
-    const compacted = await next(
-      current === null ? e : { ...e, instructions: compactInstructions(current, e.instructions) },
-    )
+    const isKept = current === null || (e.instructions ?? '').includes(KEPT_MARK)
+    const compacted = await next(isKept ? e : { ...e, instructions: compactInstructions(current, e.instructions) })
     if (compacted.messages !== undefined) {
       const kept = compacted.messages.length
       await update($, status, s => ({ ...s, cursor: kept }))
