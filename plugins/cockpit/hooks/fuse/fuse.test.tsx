@@ -5,7 +5,7 @@ import type { On } from 'claude-code'
 import type { Engine } from 'claude-code/testing'
 
 import { ALARM, RUN, RUN_ALWAYS, STOP } from './register'
-import { commandsOf, findDanger } from './rules'
+import { commandsOf, deniedBy, findDanger } from './rules'
 
 const bash = (command: string, description?: string) => findDanger('Bash', { command, description })
 
@@ -106,6 +106,21 @@ describe('что не ловится', () => {
     expect(commandsOf(HEREDOC)).toEqual(['M=~/work/ai-settings/plugins/fuse', 'python3 - $M/hooks/rules.ts', 'grep -n "rm-recursive" $M/hooks/rules.ts'])
   })
 
+  test('запрет из настроек: только то, что движок сам сопоставит', () => {
+    const deny = ['Bash(rm -rf*)', 'Bash(git reset --hard*)', 'Bash(*--dangerously-skip-permissions*)', 'mcp__mattermost']
+    const run = (command: string) => deniedBy('Bash', { command }, deny)
+    expect(run('rm -rf ~/fuse-sandbox/build')).toBe('Bash(rm -rf*)')
+    expect(run('cd repo && rm -rf build')).toBe('Bash(rm -rf*)')
+    expect(run('claude --dangerously-skip-permissions')).toBe('Bash(*--dangerously-skip-permissions*)')
+    // As written these are not what the rules say: the engine runs them, the fuse asks.
+    expect(run('rtk proxy rm -rf build')).toBeNull()
+    expect(run('git -C repo reset --hard')).toBeNull()
+    expect(run('rm -r build')).toBeNull()
+    expect(run('git commit -m "rm -rf* is bad"')).toBeNull()
+    expect(deniedBy('mcp__mattermost__mattermost_post_create', {}, deny)).toBe('mcp__mattermost')
+    expect(deniedBy('mcp__mattermost_extra__x', {}, deny)).toBeNull()
+  })
+
   test('обычные инструменты и чтение в MCP', () => {
     expect(findDanger('Read', { file_path: '/etc/hosts' })).toBeNull()
     expect(findDanger('mcp__yandex-tracker__tracker_issue_get', { key: 'DEV-1' })).toBeNull()
@@ -127,13 +142,16 @@ type Seen = { ran: string[]; asked: string[]; card: string[]; options: Array<Rec
 // The engine beneath: tools run, the dialog answers `answer`, the disk holds a
 // `build` folder with two files. While the question is open, it looks at the
 // band and at the dialog as the fuse rewrites it.
-function standInForEngine(test$: Engine, on: On, answer: string | null): Seen {
+function standInForEngine(test$: Engine, on: On, answer: string | null, deny: string[] = []): Seen {
   const seen: Seen = { ran: [], asked: [], card: [], options: [], played: [] }
   on('audio.play', (_$, e) => {
     if (e.clip.asset !== undefined) seen.played.push(e.clip.asset)
     return { value: undefined }
   })
   on('session.cwd', () => ({ value: '/Users/x/work' }) as never)
+  on('settings.read', (_$, e) =>
+    ({ value: (e as { source?: string }).source === 'user' ? { permissions: { deny } } : {} }) as never,
+  )
   on('fs.stat', () => ({ value: { kind: 'dir', size: 0, mtimeMs: 0, isLink: false } }) as never)
   on('fs.list', (_$, e) =>
     (String((e as { path?: string }).path).endsWith('build')
@@ -219,6 +237,16 @@ test('закрытый диалог — тоже запрет, карточка 
   const band = await $.ui.mount({ plugin: 'cockpit', surface: 'desktop', component: 'AbovePrompt', props: BAND })
   expect(await band.find({ type: 'Text', text: /Опасно/ })).toBeUndefined()
   await band.unmount()
+})
+
+test('то, что и так запрещено настройками, проходит к движку без вопроса', async ($, on) => {
+  const seen = standInForEngine($, on, RUN, ['Bash(rm -rf*)'])
+
+  await $.tool.call(RM_BUILD)
+  expect(seen.asked.length).toBe(0)
+  expect(seen.played).toEqual([])
+  // The stand-in runs it; the real engine refuses it by the rule.
+  expect(seen.ran).toEqual(['Bash'])
 })
 
 test('безопасное проходит без вопросов', async ($, on) => {

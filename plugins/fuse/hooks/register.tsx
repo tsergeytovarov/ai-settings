@@ -2,7 +2,7 @@ import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register, RenderElement } from 'claude-code'
 
 import type { AllowedRules, PendingDanger, TargetInfo } from '../types'
-import { findDanger } from './rules'
+import { deniedBy, findDanger } from './rules'
 import type { Danger } from './rules'
 import { targetLine } from './targets'
 
@@ -95,6 +95,25 @@ export async function describeTargets(
   return described
 }
 
+const SETTINGS_SOURCES = ['user', 'project', 'local', 'flag', 'policy'] as const
+
+// Every `permissions.deny` rule, from each settings source on its own: the merge
+// takes a key from one source and could hide the others' rules. A read that
+// fails gives no rules, so the fuse asks rather than stays silent.
+async function denyRules($: EngineInterface): Promise<string[]> {
+  const rules: string[] = []
+  for (const source of SETTINGS_SOURCES) {
+    try {
+      const permissions = (await $.settings.read({ source })).permissions as { deny?: unknown } | undefined
+      const deny = Array.isArray(permissions?.deny) ? permissions.deny : []
+      rules.push(...deny.filter((rule): rule is string => typeof rule === 'string'))
+    } catch (error) {
+      $.ui.log(`fuse: settings ${source} unread: ${error instanceof Error ? error.message : String(error)}`, { to: 'debug' })
+    }
+  }
+  return rules
+}
+
 // `next(e)` answers `{ type: 'engine' }` when nothing beneath drew the band:
 // it may only stand alone, never inside another tree.
 function drawnBeneath(rest: RenderElement): RenderElement | null {
@@ -141,6 +160,8 @@ export const register: Register = on => {
     // The call's arguments sit on the event itself, beside `tool`.
     const danger = findDanger(e.tool, e)
     if (danger === null) return next(e)
+    // A settings deny rule refuses it anyway: no question whose «Выполнить» cannot run.
+    if (deniedBy(e.tool, e, await denyRules($)) !== null) return next(e)
     if ((await read($, allowed)).includes(danger.rule)) return next(e)
 
     // A scheduled task posts and mails on purpose; it may not destroy anything.

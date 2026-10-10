@@ -59,12 +59,49 @@ const GIT_GLOBALS = /^git((?:\s+(?:-C\s+(?:"[^"]*"|'[^']*'|\S+)|-c\s+\S+|--[\w-]
 // dropped and quoted text loses its separators, so a dangerous word inside a
 // message, a commit text or a script fed through `<<EOF` is not a command.
 export function commandsOf(line: string): string[] {
+  return rawCommandsOf(line)
+    .map(part => part.replace(WRAPPERS, '').replace(GIT_GLOBALS, 'git'))
+    .filter(part => part !== '')
+}
+
+// The same commands as written, wrappers and git options left in place: what
+// the engine's own permission rules are matched against.
+function rawCommandsOf(line: string): string[] {
   const withoutHeredocs = line.replace(/<<-?\s*(['"]?)(\w+)\1[^\n]*\n[\s\S]*?\n[ \t]*\2[ \t]*(?=\n|$)/g, '')
   const flattened = withoutHeredocs.replace(QUOTED, quoted => quoted.replace(/[;&|\n]/g, ' '))
   return flattened
     .split(/&&|\|\||[;|\n]/)
-    .map(part => part.trim().replace(WRAPPERS, '').replace(GIT_GLOBALS, 'git'))
+    .map(part => part.trim())
     .filter(part => part !== '')
+}
+
+// A Bash rule's content as a test on one command: `npm test:*` and `rm -rf*`
+// are prefixes, `*` anywhere is any text, anything else is the whole command.
+function bashRuleMatches(content: string, part: string): boolean {
+  if (content.endsWith(':*')) return part.startsWith(content.slice(0, -2))
+  const pattern = content.split('*').map(piece => piece.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('.*')
+  return new RegExp(`^${pattern}$`, 's').test(part)
+}
+
+// The settings' `permissions.deny` rule that blocks this call anyway, or null.
+// Such a call is the engine's to refuse: asking about it would offer «Выполнить»
+// that cannot run. Bash rules are matched against each command as written, so a
+// command the engine would not match (`rtk proxy rm -rf`) still gets the question.
+export function deniedBy(tool: string, input: unknown, deny: readonly string[]): string | null {
+  const fields = typeof input === 'object' && input !== null ? (input as Record<string, unknown>) : {}
+  const cmd = command(tool, fields)
+  for (const rule of deny) {
+    const bashRule = /^Bash\((.*)\)$/s.exec(rule)
+    if (bashRule !== null) {
+      if (cmd !== null && rawCommandsOf(cmd).some(part => bashRuleMatches(bashRule[1] ?? '', part))) return rule
+      continue
+    }
+    if (rule === tool) return rule
+    // An MCP server or a `mcp__server__*` family.
+    const family = rule.endsWith('__*') ? rule.slice(0, -1) : `${rule}__`
+    if (rule.startsWith('mcp__') && tool.startsWith(family)) return rule
+  }
+  return null
 }
 
 // A Bash rule: `pattern` is tried on each command from its first word.

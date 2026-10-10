@@ -154,14 +154,16 @@ export const register: Register = on => {
     const others = drawnBeneath(rest)
     if (others === null) return buttons
 
-    // Side by side, not glued into one row: in a band that wraps (context-weather's)
-    // the buttons stay on the weather's line and a full-width card (the fuse's)
-    // takes a line of its own.
+    // This plugin sits outside the others: their band takes the room the buttons
+    // leave, and the buttons hold to the top, beside the weather's line, when the
+    // band below grows a second line (the fuse's card).
     return (
-      <>
+      <Box flexDirection="row" alignItems="flex-start" gap={1} width="100%">
+        <Box flexGrow={1} flexShrink={1} minWidth={0}>
+          {others}
+        </Box>
         {buttons}
-        {others}
-      </>
+      </Box>
     )
   })
 
