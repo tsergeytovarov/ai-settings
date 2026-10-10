@@ -20,6 +20,18 @@ async function compactNow($: EngineInterface): Promise<void> {
   }
 }
 
+// chat-memory draws its own «Сжать», which also saves the memory: with it on, one button
+// is enough. A read that fails counts as off, so the band keeps a button.
+async function isChatMemoryOn($: EngineInterface): Promise<boolean> {
+  try {
+    const enabled = (await $.settings.read()).enabledPlugins
+    if (typeof enabled !== 'object' || enabled === null) return false
+    return Object.entries(enabled).some(([id, on]) => id.startsWith('chat-memory@') && on !== false)
+  } catch {
+    return false
+  }
+}
+
 // `next(e)` answers `{ type: 'engine' }` when nothing beneath drew: it may only stand alone.
 function drawnBeneath(rest: RenderElement): RenderElement | null {
   return rest.type === 'engine' ? null : rest
@@ -29,7 +41,7 @@ export const register: Register = on => {
   // «Сжать» at the right end of the band; what else the band holds takes the room it leaves.
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
     const rest = await next(e)
-    if (e.props.hasSurvey) return rest
+    if (e.props.hasSurvey || (await isChatMemoryOn($))) return rest
 
     const { Box, Button } = $.ui.resolve(e)
     const button = (

@@ -99,6 +99,7 @@ Claude Desktop не читает `~/.claude/skills/` (это канал Claude C
 - [Подключение Codex CLI](docs/setup/codex.md)
 - [Подключение Cursor](docs/setup/cursor.md)
 - [Подключение Gemini CLI](docs/setup/gemini.md)
+- [Моды Claude Code: полоса, предохранитель, память, звуки](docs/setup/claude-mods.md)
 - [Новый проект](docs/setup/new-project.md)
 
 ## Лицензия

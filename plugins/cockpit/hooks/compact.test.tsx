@@ -35,6 +35,15 @@ test('одна полоса: погода, лимиты и «Сжать» вме
   }
 })
 
+test('с chat-memory своей кнопки нет: у него своя «Сжать»', async ($, on) => {
+  standInForEngine(on)
+  on('settings.read', () => ({ value: { enabledPlugins: { 'chat-memory@popovs': true } } }) as never)
+
+  const band = await $.ui.mount({ plugin: 'cockpit', surface: 'desktop', component: 'AbovePrompt', props: BAND })
+  expect(await band.find({ type: 'Button', key: 'cockpit-compact' })).toBeUndefined()
+  await band.unmount()
+})
+
 test('«Сжать» сжимает сразу, а если движок отказал — ставит /compact в очередь', async ($, on) => {
   standInForEngine(on)
   let compacted = 0
