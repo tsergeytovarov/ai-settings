@@ -167,10 +167,10 @@ function standInForEngine(test$: Engine, on: On, answer: string | null, deny: st
     if (e.tool === 'AskUserQuestion') {
       const questions = (e as unknown as { questions: Array<{ question: string }> }).questions
       seen.asked.push(questions[0]!.question)
-      const band = await test$.ui.mount({ plugin: 'fuse', surface: 'desktop', component: 'AbovePrompt', props: BAND })
+      const band = await test$.ui.mount({ plugin: 'airbag', surface: 'desktop', component: 'AbovePrompt', props: BAND })
       seen.card = (await band.findAll({ type: 'Text' })).map(text => text.text)
       await band.unmount()
-      const dialog = await test$.ui.mount({ plugin: 'fuse', surface: 'desktop', component: 'AskUserQuestion', props: { tool: 'AskUserQuestion', questions } })
+      const dialog = await test$.ui.mount({ plugin: 'airbag', surface: 'desktop', component: 'AskUserQuestion', props: { tool: 'AskUserQuestion', questions } })
       await dialog.unmount()
       if (answer === null) return { deny: 'dismissed' }
       return { result: { questions, answers: { [questions[0]!.question]: answer } } } as never
@@ -233,7 +233,7 @@ test('закрытый диалог — тоже запрет, карточка 
 
   await $.tool.call(FORCE_PUSH)
   expect(seen.ran).toEqual([])
-  const band = await $.ui.mount({ plugin: 'fuse', surface: 'desktop', component: 'AbovePrompt', props: BAND })
+  const band = await $.ui.mount({ plugin: 'airbag', surface: 'desktop', component: 'AbovePrompt', props: BAND })
   expect(await band.find({ type: 'Text', text: /Опасно/ })).toBeUndefined()
   await band.unmount()
 })

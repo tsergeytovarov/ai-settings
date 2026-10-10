@@ -1,4 +1,4 @@
-// Generated from plugins/fuse by cockpit/scripts/sync.py: edit the source, then sync.
+// Generated from plugins/airbag by cockpit/scripts/sync.py: edit the source, then sync.
 import type { TargetInfo } from '../../types'
 
 // How the fuse words what an rm would take with it. The walk that counts it

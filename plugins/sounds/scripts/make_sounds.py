@@ -50,6 +50,6 @@ def save(path: Path, samples: list[float], gain: float) -> None:
         out.writeframes(b"".join(struct.pack("<h", int(s / peak * gain * 32_767)) for s in samples))
 
 
-save(PLUGINS / "sounds" / "sounds" / "done.wav", drop(), gain=0.95)
-save(PLUGINS / "fuse" / "sounds" / "alarm.wav", siren(), gain=0.55)
+save(PLUGINS / "sounds" / "sounds" / "done.wav", drop(), gain=0.475)
+save(PLUGINS / "airbag" / "sounds" / "alarm.wav", siren(), gain=0.275)
 print("ok")

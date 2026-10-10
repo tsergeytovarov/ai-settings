@@ -1,15 +1,16 @@
+// Generated from plugins/airbag by cockpit/scripts/sync.py: edit the source, then sync.
 import { atom, read, update } from 'claude-code'
 import type { EngineInterface, Register, RenderElement } from 'claude-code'
 
-import type { AllowedRules, PendingDanger, TargetInfo } from '../types'
+import type { AllowedRules, PendingDanger, TargetInfo } from '../../types'
 import { deniedBy, findDanger } from './rules'
 import type { Danger } from './rules'
 import { targetLine } from './targets'
 
-const allowed = atom({ plugin: 'fuse', key: 'allowed' } as const, [] as AllowedRules)
-const isUnattended = atom({ plugin: 'fuse', key: 'isUnattended' } as const, false)
+const allowed = atom({ plugin: 'cockpit', key: 'allowed' } as const, [] as AllowedRules)
+const isUnattended = atom({ plugin: 'cockpit', key: 'isUnattended' } as const, false)
 // The question waiting for an answer, for the red card above the prompt.
-const pending = atom({ plugin: 'fuse', key: 'pending' } as const, null as PendingDanger | null)
+const pending = atom({ plugin: 'cockpit', key: 'pending' } as const, null as PendingDanger | null)
 
 export const RUN = 'Выполнить'
 export const RUN_ALWAYS = 'Разрешать до конца сессии'
@@ -108,7 +109,7 @@ async function denyRules($: EngineInterface): Promise<string[]> {
       const deny = Array.isArray(permissions?.deny) ? permissions.deny : []
       rules.push(...deny.filter((rule): rule is string => typeof rule === 'string'))
     } catch (error) {
-      $.ui.log(`fuse: settings ${source} unread: ${error instanceof Error ? error.message : String(error)}`, { to: 'debug' })
+      $.ui.log(`airbag: settings ${source} unread: ${error instanceof Error ? error.message : String(error)}`, { to: 'debug' })
     }
   }
   return rules
@@ -138,7 +139,7 @@ async function ask($: EngineInterface, danger: Danger): Promise<string> {
   }))
   // Not awaited: the question opens while the alarm plays.
   $.audio.play({ asset: ALARM }).catch(error => {
-    $.ui.log(`fuse: alarm did not play: ${error instanceof Error ? error.message : String(error)}`, { to: 'debug' })
+    $.ui.log(`airbag: alarm did not play: ${error instanceof Error ? error.message : String(error)}`, { to: 'debug' })
   })
   try {
     return await $.ui.ask(question, { options: [RUN, RUN_ALWAYS, STOP], header: HEADER })

@@ -6,7 +6,7 @@
 | --- | --- |
 | `done.wav`, звонкая капля | ход закончился ответом: ответ дописан |
 | `ask.wav`, «кря-кря» живой кряквы | модель задала вопрос (`AskUserQuestion`), принесла план на одобрение (`ExitPlanMode`) или открылся диалог разрешения |
-| `alarm.wav` в плагине `fuse`, короткая сирена | сработал предохранитель |
+| `alarm.wav` в плагине `airbag`, короткая сирена | сработал предохранитель |
 
 Молчит:
 - когда ход остановил сам человек: он и так смотрит;
@@ -25,13 +25,13 @@ cd ~/work/ai-settings/plugins
 python3 sounds/scripts/make_sounds.py
 ```
 
-Он пишет `sounds/sounds/done.wav` и `fuse/sounds/alarm.wav`. Чтобы поменять звук, правь рецепт в скрипте и запусти его заново.
+Он пишет `sounds/sounds/done.wav` и `airbag/sounds/alarm.wav`. Чтобы поменять звук, правь рецепт в скрипте и запусти его заново.
 
-`ask.wav` — запись кряквы: Jonathon Jongsma, [xeno-canto XC62258](https://www.xeno-canto.org/62258), лицензия [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), взята с Wikimedia Commons. Из записи вырезан отрезок 1,16–2,02 с, срезан гул ниже 150 Гц, края сглажены, громкость выровнена. Этот файл распространяется под той же лицензией CC BY-SA 3.0:
+`ask.wav` — запись кряквы: Jonathon Jongsma, [xeno-canto XC62258](https://www.xeno-canto.org/62258), лицензия [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/), взята с Wikimedia Commons. Из записи вырезан отрезок 1,16–2,02 с, срезан гул ниже 150 Гц, края сглажены, громкость выровнена и уменьшена вдвое. Этот файл распространяется под той же лицензией CC BY-SA 3.0:
 
 ```bash
 ffmpeg -i "Anas_platyrhynchos_-_Mallard_-_XC62258.ogg" -ac 1 -ar 44100 mallard.wav
-ffmpeg -i mallard.wav -af "atrim=1.16:2.02,asetpts=PTS-STARTPTS,highpass=f=150,afade=t=in:d=0.01,afade=t=out:st=0.82:d=0.04,loudnorm=I=-16:TP=-2:LRA=7" -ar 44100 -ac 1 sounds/ask.wav
+ffmpeg -i mallard.wav -af "atrim=1.16:2.02,asetpts=PTS-STARTPTS,highpass=f=150,afade=t=in:d=0.01,afade=t=out:st=0.82:d=0.04,loudnorm=I=-16:TP=-2:LRA=7,volume=0.5" -ar 44100 -ac 1 sounds/ask.wav
 ```
 
 ## Установка

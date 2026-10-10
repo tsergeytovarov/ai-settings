@@ -1,4 +1,4 @@
-// Generated from plugins/fuse by cockpit/scripts/sync.py: edit the source, then sync.
+// Generated from plugins/airbag by cockpit/scripts/sync.py: edit the source, then sync.
 // What the fuse stops, and how it explains it. A rule looks at one tool call
 // and answers what would happen, or null when the call is not its business.
 

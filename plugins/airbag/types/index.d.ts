@@ -22,7 +22,7 @@ export type PendingDanger = {
 
 declare module 'claude-code' {
   interface PluginState {
-    fuse: {
+    airbag: {
       allowed: AllowedRules
       // The session runs a scheduled task: nobody is there to answer.
       isUnattended: boolean

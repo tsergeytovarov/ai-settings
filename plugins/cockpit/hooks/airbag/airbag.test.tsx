@@ -1,4 +1,4 @@
-// Generated from plugins/fuse by cockpit/scripts/sync.py: edit the source, then sync.
+// Generated from plugins/airbag by cockpit/scripts/sync.py: edit the source, then sync.
 import { describe, expect, test } from 'claude-code/testing'
 
 import type { On } from 'claude-code'

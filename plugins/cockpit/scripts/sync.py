@@ -1,7 +1,7 @@
-"""Copies context-weather and fuse into cockpit, so cockpit stays one plugin
+"""Copies context-weather and airbag into cockpit, so cockpit stays one plugin
 to install while the code lives in one place.
 
-Edit context-weather or fuse, then run from the plugins folder:
+Edit context-weather or airbag, then run from the plugins folder:
     python3 cockpit/scripts/sync.py          # write the copies
     python3 cockpit/scripts/sync.py --check  # exit 1 if a copy is stale
 """
@@ -14,10 +14,10 @@ COCKPIT = PLUGINS / "cockpit"
 # (source plugin, folder under cockpit/hooks, files to take from its hooks/)
 SOURCES = [
     ("context-weather", "weather", ["claude.ts", "icons.ts", "limits.ts", "weather.ts", "register.tsx", "weather.test.tsx"]),
-    ("fuse", "fuse", ["rules.ts", "targets.ts", "register.tsx", "fuse.test.tsx"]),
+    ("airbag", "airbag", ["rules.ts", "targets.ts", "register.tsx", "airbag.test.tsx"]),
 ]
 # Binary files copied as they are: (from, to), relative to the plugins folder.
-ASSETS = [("fuse/sounds/alarm.wav", "cockpit/sounds/alarm.wav")]
+ASSETS = [("airbag/sounds/alarm.wav", "cockpit/sounds/alarm.wav")]
 
 
 def adapt(text: str, source: str) -> str:
