@@ -13,3 +13,6 @@ dist/
 .cursor/
 .claude/sessions/
 .claude/cache/
+
+# Личный корпус голоса: переписка с коллегами, в публичную репу нельзя
+voice/private/

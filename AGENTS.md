@@ -17,6 +17,18 @@ Governs the voice of content you produce on my behalf — commits, PRs, CHANGELO
 
 @docs/ai/writing-voice.md
 
+### My voice: mandatory for every outward text
+
+Any text that will be read by people other than me goes through the `my-voice` skill (Claude: `popovs:my-voice`; Codex: `my-voice`). This applies in every project and every agent, including subagents. It covers:
+
+- messages and drafts I will send: Tracker tasks and comments, Mattermost, Telegram, email, messages to my manager, colleagues or clients;
+- posts and articles under my name;
+- texts that other writing skills produce (`tg-post-writer`, `ru-commit-message`, `ru-pr-description`, `opisat-zadachu`, `konsol-analyst` and others). Those skills keep their own structure, then the text passes the `my-voice` checklist and tone before I see it.
+
+Invoke the skill before drafting, not after. If you produce such a text without it, that is a bug: redo it through the skill. When I correct an outward text, log the correction as the skill describes.
+
+Not covered: your chat replies to me (`style.md`), code, UI strings and product copy, formal API docs, legal text.
+
 ## 4. Commands (read this FIRST for any task)
 @docs/ai/commands.md
 

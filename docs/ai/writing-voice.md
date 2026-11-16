@@ -24,6 +24,8 @@ This module governs **voice and tone of content you generate on my behalf**. It 
 
 **When in doubt:** if the text is MINE going to other humans, apply this voice. If it's the product talking to its users, don't.
 
+**Every text in scope** also goes through the `my-voice` skill, as AGENTS.md requires. It reads my real messages from `voice/private/` and overrides this module where they disagree.
+
 ## Core voice
 
 I'm a product engineer. I write the way I talk: direct, concrete, opinionated. No stage, no distance, no corporate register. The reader stands next to me, not below. Author is always present — personal take, not neutral summary. Harsh is fine when warranted. Hyperbole allowed to wake the reader up, followed by a measured thesis.
