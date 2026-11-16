@@ -27,7 +27,7 @@ Any text that will be read by people other than me goes through the `my-voice` s
 
 Invoke the skill before drafting, not after. If you produce such a text without it, that is a bug: redo it through the skill. When I correct an outward text, log the correction as the skill describes.
 
-Not covered: your chat replies to me (`style.md`), code, UI strings and product copy, formal API docs, legal text.
+Your chat replies to me use the same voice in its work-chat register, distilled in `style.md` → Tone; there is no need to invoke the skill for every reply. Not covered at all: code, UI strings and product copy, formal API docs, legal text.
 
 ## 4. Commands (read this FIRST for any task)
 @docs/ai/commands.md
